@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SimEnfermería — Laboratorio virtual de Enfermería Técnica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#040b16;--panel:#0a1829;--panel2:#0f2238;--line:#1b3858;--tx:#e8f2ff;--mut:#8ba6c4;--teal:#19e6c1;--red:#ff4d6d;--amb:#ffb020;--blue:#3fa9ff;--vio:#a77bff;--grn:#3ddc84;--ac:#19e6c1}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Outfit,system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+background:radial-gradient(900px 500px at 10% -10%,rgba(25,230,193,.13),transparent 60%),radial-gradient(800px 500px at 100% 0%,rgba(63,169,255,.12),transparent 60%),radial-gradient(700px 600px at 50% 120%,rgba(167,123,255,.10),transparent 60%),
+linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:auto,auto,auto,40px 40px,40px 40px}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace,monospace}
+.mut{color:var(--mut)}
+header.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;padding:12px 22px;background:rgba(4,11,22,.78);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--tx);font-weight:800;font-size:20px;letter-spacing:.3px}
+.logo b{color:var(--teal)}
+.logo svg{filter:drop-shadow(0 0 8px rgba(25,230,193,.6))}
+.top .sp{flex:1}
+.pill{border:1px solid var(--line);background:var(--panel);color:var(--tx);border-radius:999px;padding:8px 14px;font-size:14px;display:flex;gap:6px;align-items:center;text-decoration:none}
+.pill:hover{border-color:var(--teal)}
+main{position:relative;z-index:1;max-width:1220px;margin:0 auto;padding:26px 20px 70px}
+/* HERO */
+.hero{position:relative;border:1px solid var(--line);border-radius:28px;padding:44px 40px 34px;overflow:hidden;background:linear-gradient(135deg,rgba(15,34,56,.95),rgba(6,16,30,.95))}
+.hero h1{font-size:clamp(34px,5.4vw,62px);line-height:1.02;font-weight:900;letter-spacing:-1.5px;max-width:760px}
+.hero h1 span{background:linear-gradient(90deg,var(--teal),var(--blue) 60%,var(--vio));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{margin-top:14px;font-size:clamp(16px,2vw,19px);color:var(--mut);max-width:640px}
+.tag{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--teal);border:1px solid rgba(25,230,193,.35);background:rgba(25,230,193,.08);padding:6px 12px;border-radius:999px;margin-bottom:18px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.ecg-hero{position:absolute;left:0;right:0;bottom:0;height:120px;opacity:.9;pointer-events:none}
+.ecg-hero path{fill:none;stroke:var(--teal);stroke-width:2.5;filter:drop-shadow(0 0 6px var(--teal));stroke-dasharray:2400;stroke-dashoffset:2400;animation:draw 4s linear infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+.stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px;position:relative;z-index:2;padding-bottom:70px}
+.stat{background:rgba(4,11,22,.6);border:1px solid var(--line);border-radius:18px;padding:14px 20px;min-width:150px}
+.stat b{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:28px;color:var(--teal)}
+.stat span{font-size:13px;color:var(--mut)}
+.secttl{display:flex;align-items:end;justify-content:space-between;margin:40px 4px 16px;gap:10px;flex-wrap:wrap}
+.secttl h2{font-size:26px;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.card-m{--c:var(--teal);position:relative;text-decoration:none;color:var(--tx);border:1px solid var(--line);border-radius:22px;padding:22px;background:linear-gradient(160deg,var(--panel2),var(--panel));overflow:hidden;transition:.25s;display:flex;flex-direction:column;min-height:228px;animation:rise .5s both}
+.card-m:before{content:"";position:absolute;inset:-1px;border-radius:22px;background:radial-gradient(300px 140px at 80% 0%,color-mix(in srgb,var(--c) 30%,transparent),transparent 70%);opacity:.55;transition:.25s}
+.card-m:hover{transform:translateY(-6px);border-color:var(--c);box-shadow:0 18px 40px -14px color-mix(in srgb,var(--c) 55%,transparent)}
+.card-m:hover:before{opacity:1}
+.card-m>*{position:relative}
+.card-m .num{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;color:var(--c);letter-spacing:2px}
+.card-m .ic{font-size:40px;margin:10px 0 8px;filter:drop-shadow(0 4px 12px color-mix(in srgb,var(--c) 60%,transparent))}
+.card-m h3{font-size:20px;font-weight:700;line-height:1.15}
+.card-m p{color:var(--mut);font-size:14px;margin-top:6px;flex:1}
+.prog{height:6px;border-radius:9px;background:rgba(255,255,255,.07);margin-top:16px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--c);box-shadow:0 0 10px var(--c);border-radius:9px}
+.card-m .go{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--mut)}
+.card-m .go b{color:var(--c)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+.foot{margin-top:40px;color:var(--mut);font-size:13px;text-align:center;line-height:1.6}
+/* MODULE */
+.modhead{display:flex;align-items:center;gap:18px;flex-wrap:wrap;border:1px solid var(--line);border-radius:24px;padding:20px 24px;background:linear-gradient(120deg,color-mix(in srgb,var(--ac) 16%,var(--panel2)),var(--panel));position:relative;overflow:hidden}
+.modhead .mh{display:flex;gap:16px;align-items:center;flex:1;min-width:250px}
+.mic{font-size:46px;width:74px;height:74px;display:grid;place-items:center;border-radius:20px;background:rgba(4,11,22,.55);border:1px solid color-mix(in srgb,var(--ac) 50%,transparent);box-shadow:0 0 30px -6px var(--ac)}
+.kick{font-family:'JetBrains Mono',ui-monospace,monospace;color:var(--ac);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.modhead h1{font-size:clamp(24px,3.4vw,34px);font-weight:800;line-height:1.1}
+.modhead p{color:var(--mut);font-size:15px}
+.best{text-align:right;font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.best b{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:30px;color:var(--ac);letter-spacing:0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 16px}
+.tabs button{border:1px solid var(--line);background:var(--panel);color:var(--mut);padding:10px 18px;border-radius:14px;font-size:15px;font-weight:600;transition:.2s}
+.tabs button:hover{color:var(--tx)}
+.tabs button.on{background:var(--ac);color:#03121c;border-color:var(--ac);box-shadow:0 6px 22px -6px var(--ac)}
+.card{border:1px solid var(--line);border-radius:20px;background:linear-gradient(170deg,var(--panel2),var(--panel));padding:20px}
+.card h3{font-size:17px;font-weight:700;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.center{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{border:none;background:var(--ac);color:#03121c;font-weight:700;padding:12px 20px;border-radius:14px;font-size:15px;transition:.15s;box-shadow:0 8px 24px -10px var(--ac)}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;color:var(--tx);border:1px solid var(--line);box-shadow:none}
+.btn.red{background:var(--red);color:#fff;box-shadow:0 8px 24px -10px var(--red)}
+.btn.amb{background:var(--amb)}
+.btn.blue{background:var(--blue)}
+.inp{background:#061222;border:1px solid var(--line);color:var(--tx);padding:11px 14px;border-radius:12px;font-size:16px;width:140px;font-family:'JetBrains Mono',ui-monospace,monospace}
+.inp:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 25%,transparent)}
+.fb{margin-top:14px;border-radius:14px;padding:0;font-size:15px;line-height:1.5;overflow:hidden;transition:.3s}
+.fb.ok,.fb.bad,.fb.info{padding:14px 16px;border:1px solid}
+.fb.ok{background:rgba(61,220,132,.1);border-color:rgba(61,220,132,.45)}
+.fb.bad{background:rgba(255,77,109,.1);border-color:rgba(255,77,109,.45)}
+.fb.info{background:rgba(63,169,255,.1);border-color:rgba(63,169,255,.45)}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(255,255,255,.08)}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:var(--mut);font-size:14px;gap:10px;flex-wrap:wrap}
+.steps-dots{display:flex;gap:6px}
+.steps-dots i{width:22px;height:6px;border-radius:9px;background:rgba(255,255,255,.1)}
+.steps-dots i.ok{background:var(--grn)}.steps-dots i.bad{background:var(--red)}.steps-dots i.cur{background:var(--ac)}
+/* result */
+.result{display:flex;gap:26px;align-items:center;flex-wrap:wrap;justify-content:center;text-align:left}
+.ring{--p:0;width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ac) calc(var(--p)*1%),rgba(255,255,255,.08) 0);position:relative;flex:none}
+.ring:after{content:"";position:absolute;inset:12px;border-radius:50%;background:var(--panel)}
+.ring b{position:relative;z-index:1;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:36px}
+.result h2{font-size:26px}
+/* ordering */
+.ord{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.pool{display:flex;flex-direction:column;gap:8px}
+.chip{text-align:left;border:1px solid var(--line);background:#081527;color:var(--tx);padding:12px 14px;border-radius:12px;font-size:15px;transition:.15s}
+.chip:hover{border-color:var(--ac);transform:translateX(4px)}
+ol.ans{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:8px;min-height:60px}
+ol.ans li{counter-increment:s;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:rgba(25,230,193,.05);padding:10px 12px;border-radius:12px;font-size:15px;animation:rise .25s both}
+ol.ans li:before{content:counter(s);flex:none;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--ac);color:#03121c;font-weight:800;font-family:'JetBrains Mono',ui-monospace,monospace}
+ol.ans li span{flex:1}
+ol.ans li.ok{border-color:var(--grn);background:rgba(61,220,132,.1)}
+ol.ans li.bad{border-color:var(--red);background:rgba(255,77,109,.1)}
+ol.ans li.bad:before{background:var(--red);color:#fff}
+.x{background:none;border:none;color:var(--mut);font-size:18px}
+/* monitor */
+.monitor{background:#020910;border:1px solid #12314d;border-radius:20px;padding:14px;box-shadow:inset 0 0 40px rgba(25,230,193,.06)}
+.monitor canvas{width:100%;height:110px;display:block}
+.vgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.vbox{border-radius:12px;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.vbox small{font-size:11px;letter-spacing:1px;text-transform:uppercase;opacity:.8}
+.vbox b{display:block;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:24px;line-height:1.1}
+.vbox em{font-style:normal;font-size:11px;opacity:.7}
+.c-hr{color:#3ddc84}.c-pa{color:#ff6b8b}.c-rr{color:#ffd166}.c-t{color:#63c7ff}
+@media(max-width:560px){.pill span{display:none}header.top{padding:10px 14px}.logo{font-size:17px}.vgrid{grid-template-columns:repeat(2,1fr)}.hero{padding:30px 22px}}
+.pulse-dot{transition:transform .08s}
+.beat{animation:beat .28s ease-out}
+@keyframes beat{0%{transform:scale(1)}30%{transform:scale(1.5)}100%{transform:scale(1)}}
+.breathe{transform-origin:50% 80%;animation-name:br;animation-timing-function:ease-in-out}
+@keyframes br{0%,100%{transform:scaleX(1) scaleY(1)}50%{transform:scaleX(1.09) scaleY(1.06)}}
+.big-num{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:46px;font-weight:800;color:var(--ac)}
+.snd{display:inline-block;padding:4px 10px;border-radius:9px;background:rgba(255,107,139,.15);color:#ff6b8b;font-weight:700;opacity:0;transition:opacity .1s}
+.snd.on{opacity:1}
+.opt{border:1px solid var(--line);background:#081527;color:var(--tx);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:600;transition:.15s}
+.opt:hover{border-color:var(--ac)}
+.opt.sel{background:var(--ac);color:#03121c;border-color:var(--ac)}
+.opt.right{background:var(--grn);color:#03121c;border-color:var(--grn)}
+.opt.wrong{background:var(--red);color:#fff;border-color:var(--red)}
+/* meds */
+.doc{background:#f6f1e3;color:#1d2433;border-radius:14px;padding:16px;font-size:14px;line-height:1.7;box-shadow:0 10px 30px -10px #000;position:relative}
+.doc h4{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#8a5a00;margin-bottom:6px}
+.doc .f{display:flex;justify-content:space-between;border-bottom:1px dashed #c9bfa6;gap:10px}
+.doc .f b{font-weight:700;text-align:right}
+.band{background:linear-gradient(90deg,#dfe9ff,#fff);color:#13213a;border-radius:40px;padding:14px 22px;font-size:14px;border:3px solid #7fa7ff;position:relative}
+.band:before{content:"";position:absolute;left:-14px;top:50%;width:22px;height:22px;margin-top:-11px;border-radius:50%;background:#7fa7ff}
+.vial{background:linear-gradient(180deg,#ffffff,#e9f3ff);color:#13213a;border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.6;border-left:8px solid var(--blue)}
+.clock{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:34px;color:var(--amb);text-shadow:0 0 14px rgba(255,176,32,.5)}
+.check{display:flex;flex-wrap:wrap;gap:8px}
+.chk{border:1px solid var(--line);background:#081527;color:var(--tx);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.chk:before{content:"✓";width:20px;height:20px;border-radius:6px;display:grid;place-items:center;background:rgba(61,220,132,.2);color:var(--grn);font-size:13px}
+.chk.x{border-color:var(--red);background:rgba(255,77,109,.12)}
+.chk.x:before{content:"✕";background:var(--red);color:#fff}
+/* body map */
+.zone{cursor:pointer;transition:.15s}
+.zone circle{fill:rgba(255,176,32,.25);stroke:var(--amb);stroke-width:2}
+.zone:hover circle{fill:rgba(255,176,32,.55)}
+.zone.sel circle{fill:var(--teal);stroke:#fff;stroke-width:3;filter:drop-shadow(0 0 8px var(--teal))}
+.zone.good circle{fill:var(--grn)}
+.zone.badz circle{fill:var(--red)}
+input[type=range]{width:100%;accent-color:var(--ac);height:30px}
+/* RCP */
+.chest{width:230px;height:230px;border-radius:50%;border:none;background:radial-gradient(circle at 50% 40%,#2b4a6e,#0c1f36 70%);box-shadow:0 0 0 8px rgba(255,77,109,.15),0 20px 50px -10px rgba(255,77,109,.5),inset 0 -12px 30px rgba(0,0,0,.5);color:#fff;font-weight:800;font-size:18px;display:grid;place-items:center;transition:transform .06s;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.chest.press{transform:scale(.9);box-shadow:0 0 0 18px rgba(255,77,109,.3),0 10px 30px -10px rgba(255,77,109,.8),inset 0 -6px 20px rgba(0,0,0,.6)}
+.chest .hands{font-size:60px;line-height:1}
+.gauge{position:relative;height:34px;border-radius:12px;background:linear-gradient(90deg,#ff4d6d 0%,#ffb020 30%,#3ddc84 40%,#3ddc84 60%,#ffb020 70%,#ff4d6d 100%);opacity:.9}
+.gauge i{position:absolute;top:-8px;width:6px;height:50px;border-radius:4px;background:#fff;box-shadow:0 0 12px #fff;transition:left .2s;margin-left:-3px}
+.gauge-l{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:6px;font-family:'JetBrains Mono',ui-monospace,monospace}
+/* triage */
+.tri{border:none;border-radius:16px;padding:14px;color:#03121c;font-weight:800;font-size:16px;text-align:left;transition:.15s}
+.tri small{display:block;font-weight:600;font-size:12px;opacity:.8}
+.tri:hover{transform:translateY(-3px)}
+.p1{background:#ff4d6d;color:#fff}.p2{background:#ff8a3d}.p3{background:#ffd23f}.p4{background:#3ddc84}
+.timer{height:8px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}
+.timer i{display:block;height:100%;background:var(--ac);transition:width 1s linear}
+/* drip */
+.drop{position:absolute;left:50%;width:10px;height:13px;margin-left:-5px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#7fd3ff;box-shadow:0 0 8px #7fd3ff;animation:fall .55s ease-in forwards}
+@keyframes fall{from{top:28px;opacity:1}to{top:104px;opacity:.2}}
+.chamber{position:relative;width:70px;height:140px;margin:0 auto;border:3px solid rgba(255,255,255,.4);border-radius:14px 14px 22px 22px;background:linear-gradient(180deg,rgba(127,211,255,.04) 70%,rgba(127,211,255,.35) 70%)}
+.chamber:before{content:"";position:absolute;left:50%;top:-3px;width:10px;height:26px;margin-left:-5px;background:rgba(255,255,255,.5);border-radius:0 0 4px 4px}
+.bag{width:110px;height:120px;margin:0 auto 4px;border-radius:18px 18px 40px 40px;border:3px solid rgba(255,255,255,.45);background:linear-gradient(180deg,rgba(255,255,255,.05) 20%,rgba(127,211,255,.25) 20%);display:grid;place-items:center;font-size:12px;color:#cfe9ff;text-align:center;font-weight:700}
+.tube{width:4px;height:50px;margin:0 auto;background:rgba(255,255,255,.4)}
+/* bins */
+.items{display:flex;flex-wrap:wrap;gap:10px;min-height:70px}
+.item{border:1px solid var(--line);background:#081527;color:var(--tx);border-radius:14px;padding:10px 12px;font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center;transition:.15s;animation:rise .3s both}
+.item .e{font-size:24px}
+.item.sel{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 35%,transparent);transform:scale(1.04)}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:18px}
+.bin{border-radius:20px 20px 14px 14px;padding:16px 12px;text-align:center;font-weight:800;border:2px solid transparent;transition:.2s;min-height:150px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;position:relative}
+.bin .lid{width:80%;height:10px;border-radius:8px;background:rgba(255,255,255,.25);margin-bottom:6px}
+.bin:hover,.bin.over{transform:translateY(-4px);border-color:#fff}
+.bin small{font-weight:600;font-size:12px;opacity:.85}
+.bin .cnt{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:28px}
+.b-negra{background:linear-gradient(#2a2f3a,#111520);color:#fff}
+.b-roja{background:linear-gradient(#e63950,#9e1428);color:#fff}
+.b-amarilla{background:linear-gradient(#ffd23f,#d9a400);color:#2b2200}
+.b-punzo{background:linear-gradient(#f1f4f8,#b9c4d2);color:#7a0f1f}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+/* apgar */
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.crit{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.crit b{font-size:15px}
+.crit p{font-size:13px;color:var(--mut)}
+/* soapie */
+.stm{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#081527;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.stm p{flex:1;min-width:220px;font-size:15px}
+.sbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:#0c1d33;color:var(--tx);font-weight:800;font-family:'JetBrains Mono',ui-monospace,monospace}
+.sbtn.sel{background:var(--ac);color:#03121c;border-color:var(--ac)}
+.sbtn.right{background:var(--grn);color:#03121c}
+.sbtn.wrong{background:var(--red);color:#fff}
+.note{background:#f8fbff;color:#13213a;border-radius:14px;padding:20px;font-size:14px;line-height:1.7;white-space:pre-wrap;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:#0d2036;border:1px solid var(--line);padding:12px 20px;border-radius:14px;z-index:99;transition:.3s;font-weight:600;max-width:90vw;box-shadow:0 10px 40px -10px #000}
+#toast.on{transform:translateX(-50%) translateY(0)}
+canvas.wound{width:100%;max-width:640px;border-radius:18px;display:block;margin:0 auto;touch-action:none;cursor:crosshair;border:1px solid var(--line)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.k{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#inicio">
+    <svg width="34" height="34" viewBox="0 0 40 40"><rect x="14" y="3" width="12" height="34" rx="3" fill="#19e6c1"/><rect x="3" y="14" width="34" height="12" rx="3" fill="#19e6c1"/><path d="M5 20h8l3-6 4 12 3-8 2 2h10" stroke="#040b16" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Sim<b>Enfermería</b></span>
+  </a>
+  <div class="sp"></div>
+  <button class="pill" id="voiceBtn" title="Activar/desactivar voz">🔊 <span>Voz</span></button>
+  <a class="pill" href="#inicio">🏠 <span>Inicio</span></a>
+</header>
+<main id="view"></main>
+<div id="toast"></div>
+
+<script>
+/* ================= NÚCLEO ================= */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const V=$('#view');
+const fmt=(n,d=1)=>Number(n).toLocaleString('es-PE',{maximumFractionDigits:d});
+
+function mk(arr){return{
+  every(fn,ms){const i=setInterval(fn,ms);arr.push(()=>clearInterval(i));return i},
+  after(fn,ms){const i=setTimeout(fn,ms);arr.push(()=>clearTimeout(i));return i},
+  loop(fn){let id,on=true;const f=t=>{if(!on)return;fn(t);id=requestAnimationFrame(f)};id=requestAnimationFrame(f);const s=()=>{on=false;cancelAnimationFrame(id)};arr.push(s);return s},
+  on(fn){arr.push(fn)},arr}}
+function run(arr){arr.splice(0).forEach(f=>{try{f()}catch(e){}})}
+let G=[];
+function clean(){run(G);try{speechSynthesis.cancel()}catch(e){}}
+
+/* almacenamiento */
+const KEY='simenf_scores_v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+let MEM=load();
+function best(id){return MEM[id]||0}
+function setScore(id,p){p=Math.round(p);if(!(MEM[id]>=p)){MEM[id]=p;save(MEM)}const b=$('.best b');if(b)b.textContent=best(id)+'%'}
+
+/* audio */
+let AC;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f=880,d=.08,v=.15,type='sine'){const a=ac();if(!a)return;try{const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,a.currentTime);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+d);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+d+.03)}catch(e){}}
+const sOK=()=>{tone(660,.1,.12);setTimeout(()=>tone(990,.14,.12),90)};
+const sBad=()=>tone(180,.25,.15,'sawtooth');
+
+/* voz */
+let voiceOn=true;try{voiceOn=localStorage.getItem('simenf_voice')!=='0'}catch(e){}
+function say(t){if(!voiceOn||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='es-ES';const vs=speechSynthesis.getVoices();const v=vs.find(v=>/es[-_](PE|MX|US|419)/i.test(v.lang))||vs.find(v=>/^es/i.test(v.lang));if(v)u.voice=v;u.rate=1.02;speechSynthesis.speak(u)}catch(e){}}
+function paintVoice(){$('#voiceBtn').innerHTML=(voiceOn?'🔊':'🔇')+' <span>Voz</span>'}
+$('#voiceBtn').onclick=()=>{voiceOn=!voiceOn;try{localStorage.setItem('simenf_voice',voiceOn?'1':'0')}catch(e){}paintVoice();if(!voiceOn){try{speechSynthesis.cancel()}catch(e){}}else say('Voz activada')};
+paintVoice();
+
+let toastT;function toast(m){const t=$('#toast');t.innerHTML=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)}
+function fb(el,type,html){el.className='fb '+type;el.innerHTML=html}
+
+/* pestañas */
+function tabs(el,list,ctx){
+  el.innerHTML=`<div class="tabs">${list.map((x,i)=>`<button data-i="${i}">${x.t}</button>`).join('')}</div><div class="tabbody"></div>`;
+  const tb=$('.tabbody',el);const sc=[];ctx.on(()=>run(sc));
+  const show=i=>{run(sc);$$('.tabs button',el).forEach((b,j)=>b.classList.toggle('on',i==j));tb.innerHTML='';list[i].f(tb,mk(sc))};
+  $$('.tabs button',el).forEach(b=>b.onclick=()=>show(+b.dataset.i));show(0);
+}
+/* resultado */
+function result(el,pct,title,msg,retry){
+  const p=Math.round(pct);const em=p>=90?'🏆':p>=70?'🎉':p>=50?'💪':'📚';
+  el.innerHTML=`<div class="card" style="margin-top:16px"><div class="result"><div class="ring" style="--p:${p}"><b>${p}%</b></div><div><div style="font-size:44px">${em}</div><h2>${title}</h2><p class="mut" style="max-width:460px;margin:6px 0 14px">${msg}</p><button class="btn" id="retry">↻ Practicar de nuevo</button></div></div></div>`;
+  $('#retry',el).onclick=retry;if(p>=70)sOK();say(title+'. Obtuviste '+p+' por ciento.');
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+/* juego de secuencia */
+function orderGame(el,steps,onDone,intro){
+  let pool=shuffle(steps.map((s,i)=>({s,i}))),ans=[],done=false;
+  const draw=()=>{
+    el.innerHTML=`${intro?`<p class="mut" style="margin-bottom:14px">${intro}</p>`:''}<div class="ord"><div class="card"><h3>📋 Pasos disponibles <span class="badge">${pool.length}</span></h3><div class="pool">${pool.map((p,k)=>`<button class="chip" data-k="${k}">${p.s}</button>`).join('')||'<p class="mut">Todos los pasos están colocados ✔</p>'}</div></div><div class="card"><h3>🧭 Tu secuencia</h3><ol class="ans">${ans.map((p,k)=>`<li class="${p.st||''}"><span>${p.s}</span>${done?'':`<button class="x" data-k="${k}" title="Quitar">↺</button>`}</li>`).join('')}</ol>${ans.length?'':'<p class="mut">Toca los pasos en el orden correcto.</p>'}<div class="row" style="margin-top:14px"><button class="btn" id="chk" ${pool.length||done?'disabled':''}>Verificar secuencia</button><button class="btn ghost" id="rst">Reiniciar</button></div><div class="fb"></div></div></div>`;
+    $$('.chip',el).forEach(b=>b.onclick=()=>{ans.push(pool.splice(+b.dataset.k,1)[0]);tone(520,.05,.08);draw()});
+    $$('.x',el).forEach(b=>b.onclick=()=>{pool.push(ans.splice(+b.dataset.k,1)[0]);draw()});
+    $('#rst',el).onclick=()=>{pool=shuffle(steps.map((s,i)=>({s,i})));ans=[];done=false;draw()};
+    const c=$('#chk',el);if(c)c.onclick=()=>{done=true;let ok=0;ans.forEach((p,k)=>{p.st=p.i===k?'ok':'bad';if(p.i===k)ok++});draw();
+      const pct=ok/steps.length*100;const f=$('.fb',el);
+      if(pct===100){fb(f,'ok','<b>¡Secuencia perfecta!</b> Todos los pasos están en el orden correcto.');sOK()}
+      else{sBad();fb(f,'bad',`<b>${ok} de ${steps.length} pasos en su lugar.</b><br>Orden correcto:<ol style="margin:8px 0 0 20px">${steps.map(s=>`<li>${s}</li>`).join('')}</ol>`)}
+      onDone&&onDone(pct)};
+  };draw();
+}
+
+/* ================= MÓDULOS ================= */
+const MODS=[
+ {id:'signos',n:'Signos vitales',d:'Presión arterial, temperatura, pulso y respiración',ic:'🩺',c:'#19e6c1',r:mSignos,v:'Simulador de signos vitales. Mide el pulso, la respiración, la presión arterial y la temperatura del paciente.'},
+ {id:'medicamentos',n:'Administración segura de medicamentos',d:'Verifica los correctos antes de administrar',ic:'💊',c:'#3fa9ff',r:mMeds,v:'Administración segura de medicamentos. Compara la indicación, el brazalete y el medicamento antes de administrar.'},
+ {id:'inyecciones',n:'Inyecciones IM y SC',d:'Sitio de aplicación y ángulo de la aguja',ic:'💉',c:'#a77bff',r:mInyec,v:'Inyecciones. Elige el sitio correcto y el ángulo de inserción de la aguja.'},
+ {id:'rcp',n:'Primeros auxilios y RCP',d:'Cadena de supervivencia y ritmo de compresiones',ic:'❤️',c:'#ff4d6d',r:mRCP,v:'Primeros auxilios y reanimación cardiopulmonar.'},
+ {id:'heridas',n:'Curación de heridas',d:'Técnica aséptica y limpieza correcta',ic:'🩹',c:'#ff8a3d',r:mHeridas,v:'Curación de heridas con técnica aséptica.'},
+ {id:'triaje',n:'Triaje de pacientes',d:'Asigna la prioridad de atención en emergencia',ic:'🚑',c:'#ffd23f',r:mTriaje,v:'Triaje de pacientes. Asigna la prioridad correcta a cada paciente.'},
+ {id:'dosis',n:'Cálculo de dosis y goteo IV',d:'Gotas por minuto, mililitros y dosis pediátricas',ic:'🧮',c:'#63c7ff',r:mDosis,v:'Cálculo de dosis y goteo intravenoso.'},
+ {id:'materno',n:'Atención materno-infantil',d:'Test de APGAR y fecha probable de parto',ic:'🤱',c:'#ff7eb6',r:mMaterno,v:'Atención materno infantil. Evalúa al recién nacido con el test de Apgar y calcula la fecha probable de parto.'},
+ {id:'bioseguridad',n:'Bioseguridad y residuos',d:'Segregación de residuos y equipo de protección',ic:'🧤',c:'#3ddc84',r:mBio,v:'Bioseguridad y manejo de residuos sólidos hospitalarios.'},
+ {id:'historia',n:'Historia clínica y atención hospitalaria',d:'Notas de enfermería con formato SOAPIE',ic:'📋',c:'#b3a1ff',r:mHistoria,v:'Historia clínica. Clasifica la información del paciente en formato SOAPIE.'},
+];
+
+/* ================= INICIO ================= */
+function home(){
+  const done=MODS.filter(m=>best(m.id)>=70).length;
+  const avg=Math.round(MODS.reduce((a,m)=>a+best(m.id),0)/MODS.length);
+  V.innerHTML=`<section class="hero">
+   <div class="tag"><span class="dot"></span> Laboratorio virtual · Enfermería técnica</div>
+   <h1>Practica como en el hospital, <span>sin riesgos para el paciente.</span></h1>
+   <p class="lead">10 simuladores interactivos con casos clínicos, sonidos, cronómetros y retroalimentación inmediata para desarrollar las competencias del técnico en enfermería.</p>
+   <div class="stats"><div class="stat"><b>10</b><span>simuladores</span></div><div class="stat"><b>${done}/10</b><span>aprobados (≥70%)</span></div><div class="stat"><b>${avg}%</b><span>promedio general</span></div></div>
+   <svg class="ecg-hero" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 80 H160 l14-10 12 10 H230 l10 12 16-82 16 100 12-30 H330 q20-22 40 0 H520 l14-10 12 10 H590 l10 12 16-82 16 100 12-30 H690 q20-22 40 0 H880 l14-10 12 10 H950 l10 12 16-82 16 100 12-30 H1050 q20-22 40 0 H1200"/></svg>
+  </section>
+  <div class="secttl"><h2>Simuladores que puedes practicar</h2><span class="mut">Toca un simulador para comenzar</span></div>
+  <div class="grid">${MODS.map((m,i)=>`<a class="card-m" href="#${m.id}" style="--c:${m.c};animation-delay:${i*.05}s"><div class="num">SIM ${String(i+1).padStart(2,'0')}</div><div class="ic">${m.ic}</div><h3>${m.n}</h3><p>${m.d}</p><div class="prog"><i style="width:${best(m.id)}%"></i></div><div class="go"><span>Mejor: <b>${best(m.id)}%</b></span><b>Iniciar →</b></div></a>`).join('')}</div>
+  <p class="foot">Herramienta educativa. Los valores de referencia y procedimientos siguen guías generales (MINSA, OMS, AHA) y no reemplazan la práctica supervisada ni los protocolos de cada institución.<br>Tu progreso se guarda en este navegador.</p>`;
+}
+function route(){
+  clean();const h=location.hash.slice(1);const m=MODS.find(x=>x.id===h);window.scrollTo(0,0);
+  if(!m){home();return}
+  const i=MODS.indexOf(m);
+  V.innerHTML=`<section style="--ac:${m.c}"><div class="modhead"><div class="mh"><span class="mic">${m.ic}</span><div><div class="kick">Simulador ${String(i+1).padStart(2,'0')} / 10</div><h1>${m.n}</h1><p>${m.d}</p></div></div><div class="best">Mejor puntaje<b>${best(m.id)}%</b></div></div><div id="body"></div></section>`;
+  document.documentElement.style.setProperty('--ac',m.c);
+  m.r($('#body'),mk(G));setTimeout(()=>say(m.v),300);
+}
+window.addEventListener('hashchange',route);
+
+/* ========== 1. SIGNOS VITALES ========== */
+function mSignos(el,ctx){
+  const CASES=[
+    {t:'Adulto de 34 años en control preventivo',sys:118,dia:76,hr:72,rr:16,temp:36.6},
+    {t:'Paciente de 58 años con cefalea intensa y mareos',sys:164,dia:98,hr:86,rr:18,temp:36.8},
+    {t:'Paciente de 25 años con escalofríos y malestar general',sys:108,dia:68,hr:112,rr:24,temp:38.9},
+    {t:'Adulto mayor encontrado en ambiente frío',sys:102,dia:64,hr:54,rr:11,temp:35.3},
+    {t:'Gestante de 30 años en control prenatal',sys:122,dia:78,hr:92,rr:18,temp:37.1},
+    {t:'Paciente post operado con sangrado por herida',sys:86,dia:54,hr:124,rr:26,temp:36.2},
+  ];
+  const c=pick(CASES);const P={...c,sys:c.sys+rnd(-2,2)*2,dia:c.dia+rnd(-1,1)*2,hr:c.hr+rnd(-3,3),rr:c.rr+rnd(-1,1)};
+  const R={pulso:null,resp:null,pa:null,temp:null};let ecgRate=0;
+  el.innerHTML=`<div class="grid2" style="margin-top:18px">
+    <div class="card"><h3>🧑‍⚕️ Caso clínico</h3><p style="font-size:18px;font-weight:600">${P.t}</p><p class="mut" style="margin-top:8px">Realiza las 4 mediciones en las estaciones de abajo. Cada valor que registres aparecerá en el monitor. Al terminar, pulsa <b>Evaluar registro</b>.</p>
+    <div class="legend" style="margin-top:12px"><span>🫀 Pulso: contar 15 s × 4</span><span>🫁 Respiración: contar 30 s × 2</span><span>🩸 PA: método auscultatorio</span><span>🌡️ T° axilar</span></div></div>
+    <div class="monitor"><canvas id="ecg" width="600" height="110"></canvas><div class="vgrid">
+      <div class="vbox c-hr"><small>Pulso</small><b id="vHR">--</b><em>lpm</em></div>
+      <div class="vbox c-pa"><small>Presión</small><b id="vPA">--/--</b><em>mmHg</em></div>
+      <div class="vbox c-rr"><small>Resp.</small><b id="vRR">--</b><em>rpm</em></div>
+      <div class="vbox c-t"><small>Temp.</small><b id="vT">--</b><em>°C</em></div></div></div>
+  </div><div id="st"></div><div class="center" style="margin-top:18px"><button class="btn" id="eval">✅ Evaluar registro</button></div><div id="res"></div>`;
+  const upd=()=>{$('#vHR').textContent=R.pulso??'--';$('#vRR').textContent=R.resp??'--';$('#vPA').textContent=R.pa?R.pa.s+'/'+R.pa.d:'--/--';$('#vT').textContent=R.temp?R.temp.v.toFixed(1):'--'};
+  // ECG
+  const cv=$('#ecg'),g=cv.getContext('2d');let x=0,lt=0,t0=0,py=55;
+  const ecgY=ph=>ph<.1?Math.sin(ph/.1*Math.PI)*.12:ph<.16?0:ph<.18?-.15:ph<.21?1:ph<.24?-.32:ph<.36?0:ph<.5?Math.sin((ph-.36)/.14*Math.PI)*.25:0;
+  g.fillStyle='#020910';g.fillRect(0,0,600,110);
+  ctx.loop(t=>{if(!lt){lt=t;return}const dt=Math.min(.05,(t-lt)/1000);lt=t;
+    for(let k=0;k<4;k++){const nx=x+150*dt/4;t0+=dt/4;let y=55;if(ecgRate){y=60-ecgY((t0*ecgRate/60)%1)*42}
+      g.strokeStyle=ecgRate?'#3ddc84':'#1f4d3a';g.lineWidth=2.2;g.shadowColor='#3ddc84';g.shadowBlur=ecgRate?8:0;g.beginPath();g.moveTo(x,py);g.lineTo(nx,y);g.stroke();
+      x=nx;py=y;if(x>600){x=0;py=y}g.shadowBlur=0;g.fillStyle='#020910';g.fillRect(x+1,0,16,110)}});
+  tabs($('#st',el),[
+   {t:'🫀 Pulso',f:(b,c)=>{
+     b.innerHTML=`<div class="grid2"><div class="card" style="text-align:center"><h3>Pulso radial</h3><svg viewBox="0 0 300 200" width="100%" style="max-width:340px"><path d="M20 120 Q80 70 170 80 L290 70 L290 150 L170 150 Q80 160 20 175Z" fill="#c98b62"/><path d="M40 125 Q120 100 280 105" stroke="#a9654a" stroke-width="3" fill="none" opacity=".6"/><circle id="pd" class="pulse-dot" cx="200" cy="103" r="9" fill="#ff4d6d" style="transform-box:fill-box;transform-origin:center"/><text x="150" y="40" fill="#8ba6c4" font-size="13" text-anchor="middle">Coloca índice y medio sobre la arteria radial</text></svg>
+       <div class="big-num" id="cd">15</div><p class="mut">segundos</p><label class="mut"><input type="checkbox" id="snd" checked> sonido de apoyo</label><div style="margin-top:12px"><button class="btn" id="go">▶ Iniciar conteo de 15 s</button></div></div>
+       <div class="card"><h3>Registro</h3><p class="mut">¿Cuántas pulsaciones contaste en 15 segundos?</p><div class="row" style="margin-top:10px"><input class="inp" id="n" type="number" min="0" placeholder="latidos"><span class="mut">× 4 =</span><b id="calc" class="mono" style="font-size:22px">--</b><span class="mut">lpm</span></div><button class="btn" id="reg" style="margin-top:14px">Registrar pulso</button><div class="fb"></div>
+       <p class="mut" style="margin-top:14px;font-size:13px">Referencia adulto: 60–100 lpm. &lt;60 bradicardia · &gt;100 taquicardia.</p></div></div>`;
+     const n=$('#n',b);n.oninput=()=>$('#calc',b).textContent=n.value?n.value*4:'--';
+     $('#go',b).onclick=e=>{e.target.disabled=true;ac();let s=15;const pd=$('#pd',b);
+       const beat=()=>{pd.classList.remove('beat');void pd.offsetWidth;pd.classList.add('beat');if($('#snd',b).checked)tone(95,.09,.35,'triangle')};
+       beat();const iv=c.every(beat,60000/P.hr);const cd=c.every(()=>{s--;$('#cd',b).textContent=s;if(s<=0){clearInterval(iv);clearInterval(cd);tone(1200,.2,.15);e.target.disabled=false;e.target.textContent='↻ Repetir conteo';n.focus()}},1000)};
+     $('#reg',b).onclick=()=>{if(!n.value){toast('Ingresa el número de latidos');return}R.pulso=n.value*4;upd();fb($('.fb',b),'info',`Registrado: <b>${R.pulso} lpm</b>`)}
+   }},
+   {t:'🫁 Respiración',f:(b,c)=>{
+     b.innerHTML=`<div class="grid2"><div class="card" style="text-align:center"><h3>Observa el tórax</h3><svg viewBox="0 0 300 220" width="100%" style="max-width:320px"><circle cx="150" cy="40" r="26" fill="#c98b62"/><g id="chest" class="breathe"><path d="M80 80 Q150 62 220 80 L232 200 L68 200Z" fill="#3fa9ff" opacity=".85"/><path d="M110 110 Q150 125 190 110" stroke="#fff" stroke-width="2" fill="none" opacity=".4"/><path d="M110 135 Q150 150 190 135" stroke="#fff" stroke-width="2" fill="none" opacity=".4"/></g></svg>
+       <div class="big-num" id="cd">30</div><p class="mut">segundos</p><p class="mut" style="font-size:13px">Cuenta cada ciclo completo (inspiración + espiración) sin que el paciente lo note.</p><button class="btn" id="go" style="margin-top:10px">▶ Iniciar conteo de 30 s</button></div>
+       <div class="card"><h3>Registro</h3><p class="mut">¿Cuántas respiraciones contaste en 30 segundos?</p><div class="row" style="margin-top:10px"><input class="inp" id="n" type="number" min="0"><span class="mut">× 2 =</span><b id="calc" class="mono" style="font-size:22px">--</b><span class="mut">rpm</span></div><button class="btn" id="reg" style="margin-top:14px">Registrar respiración</button><div class="fb"></div><p class="mut" style="margin-top:14px;font-size:13px">Referencia adulto: 12–20 rpm. &lt;12 bradipnea · &gt;20 taquipnea.</p></div></div>`;
+     const n=$('#n',b);n.oninput=()=>$('#calc',b).textContent=n.value?n.value*2:'--';
+     $('#go',b).onclick=e=>{e.target.disabled=true;const ch=$('#chest',b);const d=60/P.rr;ch.style.animation='none';void ch.offsetWidth;ch.style.animation=`br ${d}s ease-in-out ${P.rr/2}`;let s=30;
+       const cd=c.every(()=>{s--;$('#cd',b).textContent=s;if(s<=0){clearInterval(cd);tone(1200,.2,.15);e.target.disabled=false;e.target.textContent='↻ Repetir';n.focus()}},1000)};
+     $('#reg',b).onclick=()=>{if(!n.value){toast('Ingresa el número de respiraciones');return}R.resp=n.value*2;upd();fb($('.fb',b),'info',`Registrado: <b>${R.resp} rpm</b>`)}
+   }},
+   {t:'🩸 Presión arterial',f:(b,c)=>{
+     let ticks='';for(let v=0;v<=300;v+=10){const a=(-135+v/300*270)*Math.PI/180,L=v%50?8:15;const x1=110+Math.sin(a)*92,y1=110-Math.cos(a)*92,x2=110+Math.sin(a)*(92-L),y2=110-Math.cos(a)*(92-L);ticks+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#13213a" stroke-width="${v%50?1.5:3}"/>`;if(v%50==0)ticks+=`<text x="${110+Math.sin(a)*64}" y="${114-Math.cos(a)*64}" font-size="12" font-weight="700" text-anchor="middle" fill="#13213a">${v}</text>`}
+     b.innerHTML=`<div class="grid2"><div class="card" style="text-align:center"><h3>Tensiómetro aneroide</h3><svg viewBox="0 0 220 220" width="100%" style="max-width:280px"><circle cx="110" cy="110" r="106" fill="#2a3b52"/><circle cx="110" cy="110" r="98" fill="#f4f7fb"/>${ticks}<text x="110" y="150" font-size="10" text-anchor="middle" fill="#5a6a80">mmHg</text><g id="ndl" style="transform-origin:110px 110px"><line x1="110" y1="118" x2="110" y2="30" stroke="#e11d48" stroke-width="3" stroke-linecap="round"/></g><circle cx="110" cy="110" r="8" fill="#13213a"/></svg>
+       <div class="row" style="justify-content:center"><span class="big-num mono" id="pv" style="font-size:38px">0</span><span class="mut">mmHg</span><span class="snd" id="sn">♪ ruido</span></div>
+       <div class="center" style="margin-top:10px"><button class="btn" id="inf">🎈 Inflar manguito</button><button class="btn amb" id="def" disabled>⬇ Desinflar (3 mmHg/s)</button></div></div>
+       <div class="card"><h3>Escucha los ruidos de Korotkoff 🎧</h3><p class="mut">Al desinflar, marca la <b>sistólica</b> con el primer ruido y la <b>diastólica</b> cuando el último ruido desaparece.</p>
+       <div class="center" style="margin:16px 0"><button class="btn red" id="ms" disabled>Marcar SISTÓLICA</button><button class="btn blue" id="md" disabled>Marcar DIASTÓLICA</button></div>
+       <div class="row"><span>Sistólica: <b class="mono" id="rs">--</b></span><span>Diastólica: <b class="mono" id="rd">--</b></span></div><button class="btn" id="reg" style="margin-top:14px" disabled>Registrar presión</button><div class="fb"></div>
+       <p class="mut" style="margin-top:12px;font-size:13px">Usa audífonos o sube el volumen. Normal: &lt;120/80 mmHg · Hipotensión: &lt;90/60 · HTA: ≥130/80 mmHg.</p></div></div>`;
+     let p=0,st=null,deflIv,beatIv,ms=null,md=null;const ndl=$('#ndl',b);
+     const draw=()=>{ndl.style.transform=`rotate(${-135+p/300*270}deg)`;$('#pv',b).textContent=Math.round(p)};draw();
+     const stop=()=>{clearInterval(deflIv);clearInterval(beatIv)};c.on(stop);
+     $('#inf',b).onclick=()=>{ac();stop();ms=md=null;$('#rs',b).textContent=$('#rd',b).textContent='--';$('#reg',b).disabled=true;const tgt=Math.ceil((P.sys+30)/10)*10;
+       const iv=c.every(()=>{p=Math.min(tgt,p+6);draw();tone(300,.03,.04);if(p>=tgt){clearInterval(iv);$('#def',b).disabled=false;toast('Manguito inflado a '+tgt+' mmHg. Ahora desinfla.')}},40)};
+     $('#def',b).onclick=e=>{e.target.disabled=true;$('#ms',b).disabled=$('#md',b).disabled=false;
+       deflIv=c.every(()=>{p=Math.max(0,p-3*.05);draw();if(p<Math.max(20,P.dia-25)){stop();p=0;draw();$('#ms',b).disabled=$('#md',b).disabled=true;if(ms!=null&&md!=null)$('#reg',b).disabled=false;else toast('Manguito desinflado. Vuelve a inflar si te faltó marcar.')}},50);
+       beatIv=c.every(()=>{if(p<=P.sys&&p>=P.dia){tone(150,.09,.5,'triangle');const s=$('#sn',b);s.classList.add('on');setTimeout(()=>s.classList.remove('on'),120)}},60000/P.hr)};
+     $('#ms',b).onclick=()=>{ms=Math.round(p/2)*2;$('#rs',b).textContent=ms};
+     $('#md',b).onclick=()=>{md=Math.round(p/2)*2;$('#rd',b).textContent=md;if(ms!=null)$('#reg',b).disabled=false};
+     $('#reg',b).onclick=()=>{R.pa={s:ms,d:md};upd();fb($('.fb',b),'info',`Registrado: <b>${ms}/${md} mmHg</b>`)}
+   }},
+   {t:'🌡️ Temperatura',f:(b,c)=>{
+     const opts=['Hipotermia (<36 °C)','Normal (36 – 37,4 °C)','Febrícula (37,5 – 37,9 °C)','Fiebre (38 – 39,9 °C)','Hiperpirexia (≥40 °C)'];
+     b.innerHTML=`<div class="grid2"><div class="card" style="text-align:center"><h3>Termómetro digital axilar</h3><svg viewBox="0 0 320 110" width="100%" style="max-width:360px"><rect x="10" y="30" width="250" height="50" rx="25" fill="#e8eef6"/><rect x="250" y="44" width="60" height="22" rx="11" fill="#b9c4d2"/><circle cx="300" cy="55" r="8" fill="#9aa7b8"/><rect x="40" y="38" width="150" height="34" rx="6" fill="#bfe5c8"/><text id="tv" x="115" y="64" font-family="JetBrains Mono" font-size="24" font-weight="800" text-anchor="middle" fill="#13311c">--.-</text><text x="205" y="62" font-size="14" fill="#13213a" font-weight="700">°C</text></svg>
+       <p class="mut">Seca la axila y mantén el termómetro hasta escuchar el pitido.</p><button class="btn" id="go" style="margin-top:10px">🌡️ Colocar termómetro</button></div>
+       <div class="card"><h3>Interpreta la lectura</h3><div class="pool" id="op">${opts.map((o,i)=>`<button class="opt" data-i="${i}" disabled>${o}</button>`).join('')}</div><div class="fb"></div></div></div>`;
+     $('#go',b).onclick=e=>{e.target.disabled=true;ac();let v=34;const iv=c.every(()=>{v=Math.min(P.temp,v+.1);$('#tv',b).textContent=v.toFixed(1);if(v>=P.temp-.001){clearInterval(iv);[0,200,400].forEach(d=>setTimeout(()=>tone(2200,.08,.1,'square'),d));$$('.opt',b).forEach(o=>o.disabled=false)}},70)};
+     $$('.opt',b).forEach(o=>o.onclick=()=>{$$('.opt',b).forEach(x=>x.classList.remove('sel'));o.classList.add('sel');R.temp={v:P.temp,cls:+o.dataset.i};upd();fb($('.fb',b),'info',`Registrado: <b>${P.temp.toFixed(1)} °C</b> — ${opts[o.dataset.i]}`)})
+   }},
+  ],ctx);
+  const tcls=t=>t<36?0:t<37.5?1:t<38?2:t<40?3:4;
+  const ihr=v=>v<60?'Bradicardia':v>100?'Taquicardia':'Normal';
+  const irr=v=>v<12?'Bradipnea':v>20?'Taquipnea':'Eupnea';
+  const ipa=(s,d)=>s<90||d<60?'Hipotensión':s>=140||d>=90?'HTA estadio 2':s>=130||d>=80?'HTA estadio 1':s>=120?'PA elevada':'Normal';
+  $('#eval',el).onclick=()=>{
+    if(R.pulso==null||R.resp==null||!R.pa||!R.temp){toast('⚠️ Completa las 4 estaciones antes de evaluar');return}
+    const ok={p:Math.abs(R.pulso-P.hr)<=8,r:Math.abs(R.resp-P.rr)<=4,pa:Math.abs(R.pa.s-P.sys)<=8&&Math.abs(R.pa.d-P.dia)<=8,t:R.temp.cls===tcls(P.temp)};
+    const n=Object.values(ok).filter(Boolean).length;ecgRate=P.hr;setScore('signos',n*25);
+    const row=(k,lbl,yo,real,int)=>`<tr><td>${ok[k]?'✅':'❌'} ${lbl}</td><td class="mono">${yo}</td><td class="mono">${real}</td><td>${int}</td></tr>`;
+    const r=$('#res',el);result(r,n*25,n===4?'¡Registro impecable!':n>=3?'¡Muy buen registro!':'Sigue practicando',`Pulso aceptado ±8 lpm, respiración ±4 rpm, presión ±8 mmHg y la interpretación correcta de la temperatura.`,()=>route());
+    r.querySelector('.card').insertAdjacentHTML('beforeend',`<div style="overflow-x:auto;margin-top:18px"><table style="width:100%;border-collapse:collapse;font-size:15px" cellpadding="8"><tr style="color:var(--mut);text-align:left"><th>Signo</th><th>Tu registro</th><th>Valor real</th><th>Interpretación</th></tr>
+      ${row('p','Pulso',R.pulso+' lpm',P.hr+' lpm',ihr(P.hr))}${row('r','Respiración',R.resp+' rpm',P.rr+' rpm',irr(P.rr))}${row('pa','Presión arterial',R.pa.s+'/'+R.pa.d,P.sys+'/'+P.dia,ipa(P.sys,P.dia))}${row('t','Temperatura',['Hipotermia','Normal','Febrícula','Fiebre','Hiperpirexia'][R.temp.cls],P.temp.toFixed(1)+' °C',['Hipotermia','Normal','Febrícula','Fiebre','Hiperpirexia'][tcls(P.temp)])}</table></div>`);
+  };
+}
+
+/* ========== 2. MEDICAMENTOS ========== */
+function mMeds(el,ctx){
+  const MEDS=[{n:'Ceftriaxona',d:'1 g',v:'EV',alt:'Cefazolina'},{n:'Metamizol',d:'1 g',v:'EV',alt:'Metoclopramida'},{n:'Omeprazol',d:'40 mg',v:'EV',alt:'Ondansetrón'},{n:'Dexametasona',d:'4 mg',v:'EV',alt:'Dexclorfeniramina'},{n:'Ketorolaco',d:'60 mg',v:'IM',alt:'Ketoprofeno'},{n:'Insulina NPH',d:'10 UI',v:'SC',alt:'Insulina rápida'},{n:'Paracetamol',d:'500 mg',v:'VO',alt:'Propranolol'},{n:'Amoxicilina',d:'500 mg',v:'VO',alt:'Ampicilina'},{n:'Enoxaparina',d:'40 mg',v:'SC',alt:'Heparina sódica'}];
+  const PAC=[['Rosa Elvira','Chapoñán Sánchez'],['Juan Carlos','Llontop Ramírez'],['María Isabel','Santisteban Ñiquen'],['Pedro Pablo','Sandoval Effio'],['Carmen Rosa','Puicón Damián'],['José Antonio','Bances Chafloque'],['Luz Marina','Capuñay Acosta'],['Miguel Ángel','Siesquén Vidaurre']];
+  const CORR=[['paciente','Paciente correcto'],['medicamento','Medicamento correcto'],['dosis','Dosis correcta'],['via','Vía correcta'],['hora','Hora correcta'],['vencimiento','Fecha de vencimiento']];
+  const N=6;let round=0,score=0,hist=[];
+  const pad=n=>String(n).padStart(2,'0');
+  function gen(){
+    const m=pick(MEDS),p=pick(PAC),hc='HC-'+rnd(100000,999999),cama=rnd(1,30);
+    const err=Math.random()<.22?null:pick(CORR)[0];const h=pick([8,10,14,16,18,22]);
+    const C={pac:p.join(' '),hc,cama,m,hora:pad(h)+':00',band:{n:p.join(' '),hc},vial:{n:m.n,d:m.d,v:m.v},now:pad(h)+':'+pad(rnd(0,20)),venc:`${pad(rnd(1,12))}/${new Date().getFullYear()+rnd(1,2)}`,err};
+    if(err==='paciente'){const o=pick(PAC.filter(x=>x!==p));C.band={n:p[0]+' '+o[1],hc:Math.random()<.5?hc:'HC-'+rnd(100000,999999)}}
+    if(err==='medicamento')C.vial.n=m.alt;
+    if(err==='dosis'){const [num,u]=m.d.split(' ');C.vial.d=(parseFloat(num)*2)+' '+u}
+    if(err==='via')C.vial.v=pick(['EV','IM','SC','VO'].filter(x=>x!==m.v));
+    if(err==='hora')C.now=pad((h+3)%24)+':'+pad(rnd(10,40));
+    if(err==='vencimiento')C.venc=`${pad(rnd(1,9))}/${new Date().getFullYear()-1}`;
+    return C}
+  function draw(){
+    if(round>=N){const pct=score/N*100;setScore('medicamentos',pct);el.innerHTML='';result(el,pct,score===N?'¡Administración 100% segura!':'Revisa los correctos',`Acertaste ${score} de ${N} casos. Recuerda: ante cualquier discrepancia, NO administres y comunica al profesional responsable.`,()=>{round=score=0;hist=[];draw()});return}
+    const C=gen();const marks=new Set();
+    el.innerHTML=`<div class="progress-top" style="margin-top:18px"><span>Caso <b>${round+1}</b> de ${N}</span><div class="steps-dots">${Array.from({length:N},(_,i)=>`<i class="${hist[i]===true?'ok':hist[i]===false?'bad':i===round?'cur':''}"></i>`).join('')}</div></div>
+    <div class="grid3">
+      <div class="doc"><h4>📄 Indicación médica / Kárdex</h4><div class="f"><span>Paciente</span><b>${C.pac}</b></div><div class="f"><span>N.° HC</span><b>${C.hc}</b></div><div class="f"><span>Cama</span><b>${C.cama}</b></div><div class="f"><span>Medicamento</span><b>${C.m.n}</b></div><div class="f"><span>Dosis</span><b>${C.m.d}</b></div><div class="f"><span>Vía</span><b>${C.m.v}</b></div><div class="f"><span>Hora</span><b>${C.hora}</b></div></div>
+      <div style="display:flex;flex-direction:column;gap:14px"><div><p class="mut" style="font-size:13px;margin-bottom:6px">🔖 Brazalete de identificación</p><div class="band"><b>${C.band.n}</b><br><span class="mono">${C.band.hc}</span></div></div>
+        <div class="card" style="text-align:center;padding:14px"><p class="mut" style="font-size:13px">🕐 Hora actual</p><div class="clock">${C.now}</div></div></div>
+      <div><p class="mut" style="font-size:13px;margin-bottom:6px">💊 Medicamento preparado en bandeja</p><div class="vial"><b style="font-size:18px">${C.vial.n}</b><br>Dosis preparada: <b>${C.vial.d}</b><br>Preparado para vía: <b>${C.vial.v}</b><br><span style="font-size:12px">Vence: <b>${C.venc}</b></span></div></div>
+    </div>
+    <div class="card" style="margin-top:16px"><h3>🔎 Verificación de correctos</h3><p class="mut" style="margin-bottom:10px">Toca los correctos que <b>NO coinciden</b> (se marcarán con ✕). Si todo coincide, déjalos en ✓.</p><div class="check">${CORR.map(([k,l])=>`<button class="chk" data-k="${k}">${l}</button>`).join('')}</div>
+    <div class="center" style="margin-top:16px"><button class="btn" id="adm">💉 Administrar</button><button class="btn red" id="no">⛔ No administrar y reportar</button></div><div class="fb"></div></div>`;
+    $$('.chk',el).forEach(b=>b.onclick=()=>{const k=b.dataset.k;marks.has(k)?marks.delete(k):marks.add(k);b.classList.toggle('x');tone(500,.04,.06)});
+    const decide=adm=>{$$('.chk,#adm,#no',el).forEach(x=>x.disabled=true);
+      const markOk=C.err?(marks.size===1&&marks.has(C.err)):marks.size===0;const decOk=adm===!C.err;const ok=markOk&&decOk;
+      hist[round]=ok;if(ok)score++;ok?sOK():sBad();
+      const lbl=C.err?CORR.find(x=>x[0]===C.err)[1].replace(/ correct[oa]/,''):'';
+      const why={paciente:'El nombre o la historia clínica del brazalete no coincide con la indicación.',medicamento:`Se preparó <b>${C.vial.n}</b> en lugar de <b>${C.m.n}</b> (nombres parecidos: error frecuente).`,dosis:`La dosis preparada (${C.vial.d}) no coincide con la indicada (${C.m.d}).`,via:`El medicamento está preparado para vía ${C.vial.v} y la indicación es ${C.m.v}.`,hora:`La indicación es a las ${C.hora} y son las ${C.now}: fuera del margen de ±30 min.`,vencimiento:`El medicamento venció (${C.venc}). Nunca se administra un fármaco vencido.`};
+      fb($('.fb',el),ok?'ok':'bad',(ok?'<b>¡Correcto!</b> ':'<b>Incorrecto.</b> ')+(C.err?`Error presente: <b>${lbl}</b>. ${why[C.err]} Decisión segura: <b>no administrar</b> y reportar.`:'Todos los correctos coinciden: era seguro <b>administrar</b> y luego registrar en el kárdex.')+`<div style="margin-top:10px"><button class="btn" id="nx">Siguiente caso →</button></div>`);
+      say(ok?'Correcto':'Incorrecto. '+(C.err?'El error estaba en: '+lbl:'Todo coincidía, se debía administrar'));
+      $('#nx',el).onclick=()=>{round++;draw();el.scrollIntoView({behavior:'smooth'})}};
+    $('#adm',el).onclick=()=>decide(true);$('#no',el).onclick=()=>decide(false);
+  }
+  draw();
+}
+
+/* ========== 3. INYECCIONES ========== */
+function mInyec(el,ctx){
+  const ZN={deltoides:'Deltoides',brazoP:'Cara posterior del brazo',antebrazo:'Cara anterior del antebrazo',abdomen:'Abdomen (periumbilical)',ventro:'Ventroglúteo',vasto:'Vasto lateral del muslo',muslo:'Cara anterior del muslo',dorso:'Dorsoglúteo (cuadrante superoexterno)'};
+  const POS={deltoides:[57,98],antebrazo:[46,200],abdomen:[100,196],ventro:[134,236],vasto:[132,300],muslo:[84,296],brazoP:[338,150],dorso:[322,252]};
+  const CASES=[
+   {t:'Ketorolaco 60 mg/2 ml vía IM — adulto',tipo:'IM',ok:['ventro','vasto','dorso'],a:[85,90],why:'Con 2 ml se prefiere un músculo grande: ventroglúteo (más seguro), vasto lateral o dorsoglúteo. El deltoides admite volúmenes pequeños (≈1 ml). Ángulo IM: 90°.'},
+   {t:'Vacuna contra hepatitis B (1 ml) vía IM — adulto',tipo:'IM',ok:['deltoides'],a:[85,90],why:'En adultos las vacunas IM se aplican en el deltoides, a 90°.'},
+   {t:'Vacuna pentavalente (0,5 ml) vía IM — lactante de 2 meses',tipo:'IM',ok:['vasto'],a:[85,90],why:'En lactantes el sitio de elección es el vasto lateral del muslo (músculo más desarrollado), a 90°.'},
+   {t:'Penicilina G benzatínica 2 400 000 UI vía IM profunda — adulto',tipo:'IM',ok:['ventro','dorso'],a:[85,90],why:'Volumen grande y vía IM profunda: región glútea (ventroglúteo o dorsoglúteo), a 90°.'},
+   {t:'Insulina NPH 10 UI vía SC',tipo:'SC',ok:['abdomen','brazoP','muslo'],a:[40,50],why:'La vía SC usa tejido adiposo: abdomen (a 5 cm del ombligo), cara posterior del brazo o cara anterior del muslo, con pliegue a 45° (90° si la aguja es muy corta).'},
+   {t:'Vacuna antiamarílica (0,5 ml) vía SC',tipo:'SC',ok:['brazoP'],a:[40,50],why:'Se aplica por vía SC en la región posterior del brazo (tercio medio), a 45°.'},
+   {t:'Prueba de tuberculina (PPD) 0,1 ml vía intradérmica',tipo:'ID',ok:['antebrazo'],a:[10,15],why:'La vía ID se aplica en la cara anterior del antebrazo con ángulo de 10–15°, formando una pápula.'},
+  ];
+  const N=6;let list=shuffle(CASES).slice(0,N),round=0,pts=0,hist=[];
+  function figure(){
+    const body=(cx,back)=>`<g fill="${back?'#b97f58':'#c98b62'}"><circle cx="${cx}" cy="40" r="24"/><rect x="${cx-12}" y="60" width="24" height="16"/><path d="M${cx-42} 82 Q${cx} 70 ${cx+42} 82 L${cx+38} 230 L${cx-38} 230Z"/><rect x="${cx-62}" y="86" width="20" height="150" rx="10" transform="rotate(8 ${cx-52} 86)"/><rect x="${cx+42}" y="86" width="20" height="150" rx="10" transform="rotate(-8 ${cx+52} 86)"/><rect x="${cx-38}" y="225" width="34" height="185" rx="14"/><rect x="${cx+4}" y="225" width="34" height="185" rx="14"/></g>${back?`<path d="M${cx} 230 v40" stroke="#8e5a3c" stroke-width="2"/>`:`<circle cx="${cx}" cy="200" r="2.5" fill="#8e5a3c"/>`}`;
+    return `<svg viewBox="0 0 400 420" width="100%" style="max-width:420px"><text x="100" y="416" fill="#8ba6c4" font-size="13" text-anchor="middle">Vista anterior</text><text x="300" y="416" fill="#8ba6c4" font-size="13" text-anchor="middle">Vista posterior</text>${body(100)}${body(300,1)}${Object.entries(POS).map(([k,[x,y]])=>`<g class="zone" data-z="${k}"><circle cx="${x}" cy="${y}" r="13"/><title>${ZN[k]}</title></g>`).join('')}</svg>`}
+  function draw(){
+    if(round>=N){const pct=pts/(N*2)*100;setScore('inyecciones',pct);el.innerHTML='';result(el,pct,pct>=80?'¡Excelente técnica de inyección!':'Repasa sitios y ángulos',`Obtuviste ${pts} de ${N*2} puntos (sitio + ángulo por cada caso). IM 90° · SC 45° · ID 10–15°.`,()=>{list=shuffle(CASES).slice(0,N);round=pts=0;hist=[];draw()});return}
+    const C=list[round];let zone=null,ang=60;
+    el.innerHTML=`<div class="progress-top" style="margin-top:18px"><span>Caso <b>${round+1}</b> de ${N}</span><div class="steps-dots">${Array.from({length:N},(_,i)=>`<i class="${hist[i]==2?'ok':hist[i]!=null?'bad':i===round?'cur':''}"></i>`).join('')}</div></div>
+    <div class="card" style="margin-bottom:16px;border-color:var(--ac)"><p class="mut" style="font-size:13px">ORDEN MÉDICA</p><p style="font-size:20px;font-weight:700">${C.t}</p></div>
+    <div class="grid2"><div class="card" style="text-align:center"><h3>1️⃣ Elige el sitio de aplicación</h3>${figure()}<p id="zl" class="mut" style="margin-top:6px">Toca un punto naranja</p></div>
+    <div class="card"><h3>2️⃣ Ajusta el ángulo de la aguja</h3><svg viewBox="0 -70 360 300" width="100%"><rect x="0" y="40" width="360" height="12" fill="#f2c9a8"/><rect x="0" y="52" width="360" height="26" fill="#e7a98a"/><rect x="0" y="78" width="360" height="52" fill="#f7e08c"/><rect x="0" y="130" width="360" height="100" fill="#c2464f"/><g font-size="11" fill="#13213a" font-weight="700"><text x="6" y="50">Epidermis</text><text x="6" y="70">Dermis</text><text x="6" y="108">Tejido subcutáneo</text><text x="6" y="150" fill="#fff">Músculo</text></g><g id="ndl"></g></svg>
+      <div class="row" style="justify-content:space-between;margin-top:8px"><span class="mut">Ángulo</span><b class="big-num" id="av" style="font-size:34px">60°</b></div><input type="range" id="rg" min="5" max="90" value="60"><p class="mut" id="tip" style="margin-top:4px">La punta llega a: —</p>
+      <button class="btn" id="go" style="margin-top:14px;width:100%">💉 Aplicar inyección</button><div class="fb"></div></div></div>`;
+    $$('.zone',el).forEach(z=>z.onclick=()=>{$$('.zone',el).forEach(x=>x.classList.remove('sel'));z.classList.add('sel');zone=z.dataset.z;$('#zl',el).innerHTML='Sitio elegido: <b style="color:var(--tx)">'+ZN[zone]+'</b>';tone(600,.05,.08)});
+    const dn=()=>{const a=ang*Math.PI/180,ex=180,ey=40,tl={ID:100,SC:110,IM:150}[C.tipo],ux=Math.cos(a),uy=Math.sin(a);
+      const p1x=ex+ux*tl,p1y=ey+uy*tl,s1x=ex-ux*110,s1y=ey-uy*110;
+      $('#ndl',el).innerHTML=`<line x1="${s1x}" y1="${s1y}" x2="${p1x}" y2="${p1y}" stroke="#d6dee8" stroke-width="3"/><line x1="${s1x}" y1="${s1y}" x2="${ex-ux*40}" y2="${ey-uy*40}" stroke="#7fd3ff" stroke-width="14" stroke-linecap="round" opacity=".9"/><circle cx="${p1x}" cy="${p1y}" r="5" fill="#fff" stroke="#000"/>`;
+      const y=ey+uy*tl;const lay=y<52?'Epidermis':y<78?'Dermis':y<130?'Tejido subcutáneo':'Músculo';$('#tip',el).innerHTML='La punta llega a: <b style="color:var(--tx)">'+lay+'</b>';$('#av',el).textContent=ang+'°'};
+    $('#rg',el).oninput=e=>{ang=+e.target.value;dn()};dn();
+    $('#go',el).onclick=()=>{if(!zone){toast('Primero elige el sitio de aplicación');return}
+      const zOk=C.ok.includes(zone),aOk=ang>=C.a[0]&&ang<=C.a[1];const p=(zOk?1:0)+(aOk?1:0);pts+=p;hist[round]=p;
+      $$('.zone',el).forEach(z=>{if(C.ok.includes(z.dataset.z))z.classList.add('good');else if(z.dataset.z===zone)z.classList.add('badz')});
+      $('#go',el).disabled=true;$('#rg',el).disabled=true;p==2?sOK():sBad();
+      fb($('.fb',el),p==2?'ok':'bad',`${zOk?'✅':'❌'} Sitio · ${aOk?'✅':'❌'} Ángulo (${C.tipo}: ${C.a[0]===C.a[1]?C.a[0]:C.a[0]+'–'+C.a[1]}°)<br>${C.why}<div style="margin-top:10px"><button class="btn" id="nx">Siguiente →</button></div>`);
+      $('#nx',el).onclick=()=>{round++;draw();el.scrollIntoView({behavior:'smooth'})}};
+  }
+  draw();
+}
+
+/* ========== 4. RCP ========== */
+function mRCP(el,ctx){
+  tabs(el,[
+   {t:'🧭 Secuencia de soporte vital básico',f:(b)=>orderGame(b,['Verificar que la escena sea segura','Evaluar si responde: tocar los hombros y hablarle fuerte','Pedir ayuda, llamar al 106 (SAMU) y solicitar un DEA','Verificar respiración y pulso carotídeo (máx. 10 s)','Iniciar 30 compresiones torácicas (5–6 cm, 100–120/min)','Abrir la vía aérea y dar 2 ventilaciones','Colocar el DEA apenas llegue y seguir sus indicaciones'],p=>setScore('rcp',Math.max(best('rcp'),Math.round(p*.4))),'Encuentras a un adulto tendido en el suelo de un pasillo. Ordena la secuencia de actuación del soporte vital básico.')},
+   {t:'❤️ Entrenador de compresiones',f:(b,c)=>{
+     b.innerHTML=`<div class="grid2"><div class="card" style="text-align:center"><h3 style="justify-content:center">Comprime el tórax</h3><p class="mut" style="margin-bottom:14px">Toca el tórax o presiona la <b>barra espaciadora</b>. Objetivo: <b>100–120 compresiones/min</b>, ciclos 30:2.</p><div class="center"><button class="chest" id="ch"><div><div class="hands">🫸</div><div id="cc">0 / 30</div></div></button></div>
+       <div class="center" style="margin-top:16px"><button class="btn blue" id="vent" disabled>🌬️ Ventilar (0/2)</button><label class="pill"><input type="checkbox" id="met"> Metrónomo 110/min</label></div></div>
+       <div class="card"><h3>Calidad de la RCP</h3><div class="row" style="justify-content:space-between"><span class="mut">Frecuencia actual</span><span><b class="big-num" id="rate">--</b> <span class="mut">/min</span></span></div>
+       <div class="gauge" style="margin-top:10px"><i id="gi" style="left:0%"></i></div><div class="gauge-l"><span>60</span><span>100</span><span>120</span><span>160</span></div>
+       <div class="grid3" style="margin-top:18px;grid-template-columns:repeat(3,1fr)"><div class="vbox"><small>Ciclo</small><b id="cy">1/5</b></div><div class="vbox"><small>Total</small><b id="tot">0</b></div><div class="vbox"><small>En rango</small><b id="inr" style="color:var(--grn)">0%</b></div></div>
+       <div class="fb info" id="msg" style="margin-top:16px">Realiza 5 ciclos de 30 compresiones y 2 ventilaciones.</div></div></div><div id="res"></div>`;
+     let times=[],cnt=0,cyc=1,phase='comp',vents=0,tot=0,good=0,last=0;const ch=$('#ch',b);
+     const pos=r=>Math.max(0,Math.min(100,(r-60)/100*100));
+     const msg=(t,h)=>{const m=$('#msg',b);m.className='fb '+t;m.innerHTML=h};
+     function press(){if(phase==='done')return;ac();
+       if(phase==='vent'){msg('bad','⚠️ ¡Ahora toca ventilar! Da 2 ventilaciones.');sBad();return}
+       ch.classList.add('press');setTimeout(()=>ch.classList.remove('press'),90);tone(140,.06,.3,'triangle');
+       const now=performance.now();if(last&&now-last<2000){times.push(now-last);if(times.length>4)times.shift();const r=Math.round(60000/(times.reduce((a,x)=>a+x,0)/times.length));tot++;if(r>=100&&r<=120)good++;
+         $('#rate',b).textContent=r;$('#rate',b).style.color=r>=100&&r<=120?'var(--grn)':'var(--amb)';$('#gi',b).style.left=pos(r)+'%';
+         if(r<100)msg('bad','🐢 Muy lento: aumenta el ritmo.');else if(r>120)msg('bad','🐇 Muy rápido: permite que el tórax se reexpanda.');else msg('ok','✅ ¡Buen ritmo! Comprime fuerte y rápido.')}
+       last=now;cnt++;$('#cc',b).textContent=cnt+' / 30';$('#tot',b).textContent=tot;$('#inr',b).textContent=tot?Math.round(good/tot*100)+'%':'0%';
+       if(cnt>=30){phase='vent';$('#vent',b).disabled=false;msg('info','🌬️ 30 compresiones. Abre la vía aérea (frente-mentón) y da 2 ventilaciones.');say('Dos ventilaciones')}}
+     ch.onpointerdown=e=>{e.preventDefault();press()};
+     const kd=e=>{if(e.code==='Space'&&document.body.contains(ch)){e.preventDefault();if(!e.repeat)press()}};document.addEventListener('keydown',kd);c.on(()=>document.removeEventListener('keydown',kd));
+     $('#vent',b).onclick=()=>{vents++;tone(400,.4,.08,'sine');$('#vent',b).textContent=`🌬️ Ventilar (${vents}/2)`;if(vents>=2){vents=0;cnt=0;last=0;times=[];$('#vent',b).disabled=true;$('#vent',b).textContent='🌬️ Ventilar (0/2)';$('#cc',b).textContent='0 / 30';
+       if(cyc>=5){phase='done';const pct=tot?good/tot*100:0;setScore('rcp',Math.max(best('rcp'),Math.round(40+pct*.6)));result($('#res',b),pct,pct>=80?'¡RCP de alta calidad!':'Mejora tu ritmo','Porcentaje de compresiones dentro de 100–120 por minuto en 5 ciclos. Tu puntaje del simulador combina la secuencia (40%) y este entrenador (60%).',()=>{c.arr&&run(c.arr);route()})}
+       else{cyc++;phase='comp';$('#cy',b).textContent=cyc+'/5';msg('info','Reinicia compresiones: ciclo '+cyc+' de 5.')}}};
+     let metIv;$('#met',b).onchange=e=>{clearInterval(metIv);if(e.target.checked){ac();metIv=c.every(()=>tone(1500,.03,.08,'square'),545)}};
+   }},
+  ],ctx);
+}
+
+/* ========== 5. HERIDAS ========== */
+function mHeridas(el,ctx){
+  tabs(el,[
+   {t:'🧼 Limpieza de la herida',f:(b,c)=>{
+     b.innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><div><h3>Arrastra la gasa sobre la herida para limpiarla</h3><p class="mut">Reglas: <b>una gasa por pasada</b> y empieza <b>en el centro</b> (zona más limpia) hacia afuera.</p></div><div class="row"><span class="badge">Gasas: <b id="gz">0</b></span><span class="badge">Errores: <b id="er">0</b></span><span class="badge">Limpio: <b id="pc">0%</b></span></div></div>
+     <div style="margin:14px 0"><canvas class="wound" id="cw" width="640" height="380"></canvas></div>
+     <div class="center"><button class="btn" id="ng">🧻 Tomar gasa estéril nueva (con SF 0,9%)</button><button class="btn amb" id="ap" disabled>🩹 Cubrir con apósito</button></div><div class="fb"></div></div><div id="res"></div>`;
+     const cv=$('#cw',b),g=cv.getContext('2d'),W=640,H=380,cx=W/2,cy=H/2;
+     let parts=[];for(let i=0;i<220;i++){const a=Math.random()*Math.PI*2,r=Math.sqrt(Math.random());parts.push({x:cx+Math.cos(a)*r*150,y:cy+Math.sin(a)*r*80,s:rnd(3,7),c:pick(['#7a5a1e','#a4862f','#5b4320','#c9b24a'])})}
+     const total=parts.length;let gauze='none',errs=0,gz=0,drag=false,moved=0,pos=null,dressed=false;
+     function paint(){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#e3ac87');gr.addColorStop(1,'#c98b62');g.fillStyle=gr;g.fillRect(0,0,W,H);
+       g.save();g.translate(cx,cy);g.fillStyle='rgba(220,90,90,.35)';g.beginPath();g.ellipse(0,0,175,100,0,0,7);g.fill();g.fillStyle='#b8323f';g.beginPath();g.ellipse(0,0,140,62,0,0,7);g.fill();g.fillStyle='#d9545f';g.beginPath();g.ellipse(0,0,110,40,0,0,7);g.fill();g.strokeStyle='#7d1a24';g.lineWidth=3;g.beginPath();g.moveTo(-120,0);g.lineTo(120,0);g.stroke();g.restore();
+       parts.forEach(p=>{g.fillStyle=p.c;g.beginPath();g.arc(p.x,p.y,p.s,0,7);g.fill()});
+       if(dressed){g.fillStyle='rgba(255,255,255,.96)';g.strokeStyle='#cfd8e3';g.lineWidth=4;g.beginPath();g.roundRect(cx-200,cy-115,400,230,24);g.fill();g.stroke();g.fillStyle='#e9eef5';g.fillRect(cx-150,cy-70,300,140);g.fillStyle='#13213a';g.font='700 22px Outfit';g.textAlign='center';g.fillText('Apósito estéril ✔',cx,cy+8)}
+       if(pos&&!dressed){g.save();g.translate(pos.x,pos.y);g.rotate(-.2);g.fillStyle=gauze==='dirty'?'#d9c48f':'#ffffff';g.strokeStyle='#9fb1c7';g.lineWidth=2;g.fillRect(-26,-20,52,40);g.strokeRect(-26,-20,52,40);g.strokeStyle='rgba(150,170,190,.5)';for(let i=-20;i<26;i+=8){g.beginPath();g.moveTo(i,-20);g.lineTo(i,20);g.stroke()}g.restore()}}
+     const xy=e=>{const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}};
+     const stat=()=>{const pc=Math.round((1-parts.length/total)*100);$('#pc',b).textContent=pc+'%';$('#er',b).textContent=errs;$('#gz',b).textContent=gz;if(pc>=92&&!$('#ap',b).disabled===false){}if(pc>=92)$('#ap',b).disabled=false};
+     const warn=t=>{errs++;sBad();fb($('.fb',b),'bad',t);stat()};
+     cv.onpointerdown=e=>{if(dressed)return;pos=xy(e);
+       if(gauze==='none'){toast('Toma primero una gasa estéril');pos=null;return}
+       if(gauze==='dirty'){warn('⚠️ <b>¡Gasa contaminada!</b> Nunca vuelvas a pasar una gasa usada: descártala y toma una nueva.');gauze='none';pos=null;paint();return}
+       const dx=(pos.x-cx)/150,dy=(pos.y-cy)/80;if(dx*dx+dy*dy>.35)warn('⚠️ Inicia la pasada <b>en el centro de la herida</b> y desplázate hacia afuera (de lo limpio a lo sucio).');
+       drag=true;moved=0;cv.setPointerCapture(e.pointerId)};
+     cv.onpointermove=e=>{const p=xy(e);if(drag){moved+=Math.hypot(p.x-pos.x,p.y-pos.y);parts=parts.filter(q=>Math.hypot(q.x-p.x,q.y-p.y)>26)}pos=p;if(gauze!=='none')paint();if(drag)stat()};
+     cv.onpointerup=()=>{if(drag){drag=false;if(moved>15){gauze='dirty';fb($('.fb',b),'info','Pasada realizada. La gasa quedó sucia: <b>descártala</b> y toma una nueva.')}paint()}};
+     $('#ng',b).onclick=()=>{if(gauze==='dirty')fb($('.fb',b),'ok','✅ Gasa usada descartada en bolsa roja. Nueva gasa estéril lista.');gauze='clean';gz++;stat();tone(700,.06,.08)};
+     $('#ap',b).onclick=()=>{dressed=true;paint();$('#ap',b).disabled=true;$('#ng',b).disabled=true;const pct=Math.max(0,100-errs*12);setScore('heridas',Math.max(best('heridas'),pct));result($('#res',b),pct,errs===0?'¡Técnica aséptica perfecta!':'Herida limpia, cuida la técnica',`Usaste ${gz} gasas y cometiste ${errs} error(es) de técnica. Cada error descuenta 12 puntos.`,()=>route())};
+     paint();
+   }},
+   {t:'📋 Secuencia del procedimiento',f:b=>orderGame(b,['Lavado de manos e informar al paciente sobre el procedimiento','Preparar el equipo de curación estéril','Colocarse guantes de procedimiento y retirar el apósito sucio','Valorar la herida: tamaño, bordes, exudado, olor y signos de infección','Higiene de manos y colocarse guantes estériles','Limpiar con suero fisiológico 0,9%, del centro hacia afuera','Secar con gasa estéril a toques','Cubrir con apósito estéril y fijar','Eliminar residuos según su clase, lavarse las manos y registrar'],p=>setScore('heridas',Math.max(best('heridas'),Math.round(p))),'Ordena los pasos de la curación de una herida operatoria con técnica aséptica.')},
+  ],ctx);
+}
+
+/* ========== 6. TRIAJE ========== */
+function mTriaje(el,ctx){
+  const PR=[null,{n:'Prioridad I',c:'p1',d:'Emergencia · atención inmediata'},{n:'Prioridad II',c:'p2',d:'Urgencia mayor · ≤10 min'},{n:'Prioridad III',c:'p3',d:'Urgencia menor · ≤60 min'},{n:'Prioridad IV',c:'p4',d:'Patología aguda común · consultorio'}];
+  const CASES=[
+   {e:'👨',d:'Varón de 55 años encontrado inconsciente, no respira, sin pulso carotídeo.',v:'FC 0 · FR 0',p:1,w:'Paro cardiorrespiratorio: requiere RCP inmediata.'},
+   {e:'🏍️',d:'Motociclista politraumatizado, no abre los ojos al dolor, emite sonidos incomprensibles.',v:'Glasgow 7 · PA 90/60 · FC 120',p:1,w:'Glasgow ≤8 y trauma grave: compromiso vital inmediato.'},
+   {e:'🧓',d:'Adulto mayor con dificultad respiratoria severa, labios cianóticos, no puede hablar.',v:'SatO₂ 82% · FR 34',p:1,w:'Insuficiencia respiratoria grave: atención inmediata.'},
+   {e:'🩸',d:'Mujer con sangrado vaginal abundante, pálida, sudorosa y confusa.',v:'PA 70/40 · FC 140',p:1,w:'Signos de shock hipovolémico: prioridad I.'},
+   {e:'👨‍🦳',d:'Varón de 62 años con dolor torácico opresivo de 40 min que se irradia al brazo izquierdo.',v:'PA 150/90 · FC 98 · SatO₂ 95%',p:2,w:'Sospecha de síndrome coronario agudo: urgencia mayor, ECG en menos de 10 min.'},
+   {e:'🧒',d:'Niño de 8 años con crisis asmática, tiraje intercostal, habla con frases cortas.',v:'SatO₂ 91% · FR 32',p:2,w:'Crisis asmática moderada con hipoxemia: urgencia mayor.'},
+   {e:'🦵',d:'Joven con fractura expuesta de tibia tras caída; sangrado controlado con vendaje.',v:'PA 120/80 · FC 104 · dolor 9/10',p:2,w:'Fractura expuesta con dolor intenso: urgencia mayor.'},
+   {e:'🤰',d:'Gestante de 36 semanas con cefalea intensa y visión borrosa.',v:'PA 165/110',p:2,w:'Sospecha de preeclampsia severa: urgencia mayor.'},
+   {e:'✋',d:'Corte en la palma de la mano con cuchillo, sangrado controlado, requiere sutura.',v:'Signos vitales normales',p:3,w:'Herida que necesita sutura sin compromiso vital: urgencia menor.'},
+   {e:'🤒',d:'Mujer de 30 años con fiebre y tos productiva de 3 días, sin dificultad respiratoria.',v:'T 38,5 °C · SatO₂ 97%',p:3,w:'Cuadro infeccioso estable que necesita evaluación: urgencia menor.'},
+   {e:'🦶',d:'Adolescente con esguince de tobillo tras jugar fútbol, puede apoyar con dolor.',v:'Signos vitales normales',p:3,w:'Lesión musculoesquelética estable: urgencia menor.'},
+   {e:'🤧',d:'Adulto con congestión nasal y dolor de garganta leve desde ayer.',v:'T 37,2 °C · normal',p:4,w:'Patología aguda común: atención en consultorio externo.'},
+   {e:'📄',d:'Paciente estable que acude a solicitar receta de su medicamento habitual.',v:'Signos vitales normales',p:4,w:'Sin urgencia: consultorio externo.'},
+   {e:'🧍',d:'Varón con dolor lumbar crónico de varios meses, sin cambios recientes.',v:'Signos vitales normales',p:4,w:'Cuadro crónico estable: prioridad IV.'},
+  ];
+  const N=8,TL=25;let list,round,ok,hist,tIv;
+  const start=()=>{list=shuffle(CASES).slice(0,N);round=0;ok=0;hist=[];draw()};
+  function draw(){clearInterval(tIv);
+    if(round>=N){const pct=ok/N*100;setScore('triaje',pct);el.innerHTML='';result(el,pct,pct>=85?'¡Triaje preciso!':'Revisa los criterios de prioridad',`Clasificaste correctamente ${ok} de ${N} pacientes. Prioridades según la norma técnica de los servicios de emergencia del MINSA.`,start);
+      el.querySelector('.card').insertAdjacentHTML('beforeend',`<div class="grid3" style="margin-top:18px">${list.map((c,i)=>`<div class="stm" style="border-left:6px solid ${['','#ff4d6d','#ff8a3d','#ffd23f','#3ddc84'][c.p]}"><p style="min-width:0;font-size:13px">${hist[i]?'✅':'❌'} ${c.e} ${c.d}<br><b>${PR[c.p].n}</b></p></div>`).join('')}</div>`);return}
+    const C=list[round];let t=TL;
+    el.innerHTML=`<div class="progress-top" style="margin-top:18px"><span>Paciente <b>${round+1}</b> de ${N} · Sala de emergencia</span><div class="steps-dots">${Array.from({length:N},(_,i)=>`<i class="${hist[i]===true?'ok':hist[i]===false?'bad':i===round?'cur':''}"></i>`).join('')}</div></div>
+    <div class="card" style="animation:rise .35s both"><div class="row" style="align-items:flex-start;gap:18px"><div style="font-size:70px;line-height:1">${C.e}</div><div style="flex:1;min-width:240px"><p style="font-size:20px;font-weight:600;line-height:1.35">${C.d}</p><p class="mono" style="color:var(--amb);margin-top:10px;font-size:16px">📟 ${C.v}</p></div></div>
+    <div class="row" style="justify-content:space-between;margin:16px 0 6px"><span class="mut">⏱️ Tiempo para decidir</span><b class="mono" id="tt">${t}s</b></div><div class="timer"><i id="tb" style="width:100%"></i></div>
+    <div class="grid3" style="margin-top:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">${[1,2,3,4].map(p=>`<button class="tri ${PR[p].c}" data-p="${p}">${PR[p].n}<small>${PR[p].d}</small></button>`).join('')}</div><div class="fb"></div></div>`;
+    say(C.d);
+    const answer=p=>{clearInterval(tIv);$$('.tri',el).forEach(x=>{x.disabled=true;x.style.opacity=+x.dataset.p===C.p?1:.35});const good=p===C.p;hist[round]=good;if(good)ok++;good?sOK():sBad();
+      fb($('.fb',el),good?'ok':'bad',`${p==null?'⏰ <b>Se acabó el tiempo.</b> ':good?'<b>¡Correcto!</b> ':'<b>Incorrecto.</b> '}Era <b>${PR[C.p].n}</b>: ${C.w}<div style="margin-top:10px"><button class="btn" id="nx">Siguiente paciente →</button></div>`);$('#nx',el).onclick=()=>{round++;draw()}};
+    $$('.tri',el).forEach(x=>x.onclick=()=>answer(+x.dataset.p));
+    tIv=ctx.every(()=>{t--;$('#tt',el).textContent=t+'s';$('#tb',el).style.width=(t/TL*100)+'%';if(t<=5)tone(900,.04,.06);if(t<=0)answer(null)},1000);
+  }
+  el.innerHTML=`<div class="card" style="margin-top:18px;text-align:center"><div style="font-size:60px">🚑</div><h2 style="font-size:26px;margin:6px 0">Turno en la sala de emergencia</h2><p class="mut" style="max-width:560px;margin:0 auto 18px">Llegarán ${N} pacientes. Tienes ${TL} segundos para asignar a cada uno su prioridad de atención.</p><div class="grid3" style="max-width:760px;margin:0 auto 18px">${[1,2,3,4].map(p=>`<div class="tri ${PR[p].c}" style="cursor:default">${PR[p].n}<small>${PR[p].d}</small></div>`).join('')}</div><button class="btn" id="st">▶ Comenzar turno</button></div>`;
+  $('#st',el).onclick=start;
+}
+
+/* ========== 7. DOSIS Y GOTEO ========== */
+function dripWidget(host,c){
+  host.innerHTML=`<div class="bag" id="bg">SOLUCIÓN<br>IV</div><div class="tube"></div><div class="chamber" id="chm"></div><div class="tube" style="height:40px"></div><p class="mono" style="text-align:center;margin-top:6px"><b id="dr">0</b> gotas/min</p>`;
+  let rate=0,last=0;const chm=$('#chm',host);
+  c.loop(t=>{if(rate>0&&t-last>=60000/Math.min(rate,240)){last=t;const d=document.createElement('div');d.className='drop';chm.appendChild(d);d.addEventListener('animationend',()=>d.remove())}});
+  return{set(r,label){rate=r;$('#dr',host).textContent=label??Math.round(r)}};
+}
+function mDosis(el,ctx){
+  tabs(el,[
+   {t:'📝 Ejercicios',f:(b,c)=>{
+     const r2=x=>Math.round(x*100)/100;
+     const GEN=[
+      ()=>{const V=pick([500,1000,1500]),T=pick([4,6,8,12,24]),a=V/(T*3);return{t:`Pasar <b>${V} ml</b> de cloruro de sodio 0,9% en <b>${T} horas</b> con <b>macrogotero</b> (20 gotas = 1 ml). ¿Cuántas gotas por minuto?`,a:Math.round(a),u:'gotas/min',tol:1,drip:Math.round(a),s:`Gotas/min = Volumen (ml) ÷ (horas × 3)<br>= ${V} ÷ (${T} × 3) = ${V} ÷ ${T*3} = <b>${fmt(a,2)} ≈ ${Math.round(a)} gotas/min</b>`}},
+      ()=>{const V=pick([100,250,500]),T=pick([4,5,8,10,12,24]),a=V/T;return{t:`Pasar <b>${V} ml</b> de dextrosa 5% en <b>${T} horas</b> con <b>microgotero</b> (60 microgotas = 1 ml). ¿Cuántas microgotas por minuto?`,a:Math.round(a),u:'microgotas/min',tol:1,drip:Math.round(a),s:`Con microgotero: microgotas/min = ml ÷ horas (porque 60 microgotas/ml ÷ 60 min = 1)<br>= ${V} ÷ ${T} = <b>${fmt(a,2)} ≈ ${Math.round(a)} microgotas/min</b>`}},
+      ()=>{const V=pick([500,1000]),T=pick([4,6,8,10,12]),a=V/T;return{t:`Programar la <b>bomba de infusión</b> para pasar <b>${V} ml</b> en <b>${T} horas</b>. ¿Cuántos ml/h?`,a:r2(a),u:'ml/h',tol:.6,s:`ml/h = Volumen ÷ horas = ${V} ÷ ${T} = <b>${fmt(a,1)} ml/h</b>`}},
+      ()=>{const D=pick([{n:'Amikacina',m:500,v:2,p:[250,300,350,400]},{n:'Gentamicina',m:80,v:2,p:[40,60,120]},{n:'Metamizol',m:1000,v:2,p:[500,750]},{n:'Dexametasona',m:8,v:2,p:[4,6]},{n:'Ceftriaxona (1 g diluido en 10 ml)',m:1000,v:10,p:[500,750,250]}]);const P=pick(D.p),a=P/D.m*D.v;return{t:`Indicación: <b>${D.n.split(' (')[0]} ${P} mg</b>. Disponible: <b>${D.n.includes('(')?D.n.match(/\((.*)\)/)[1]:D.m+' mg en '+D.v+' ml'}</b>. ¿Cuántos ml debes administrar?`,a:r2(a),u:'ml',tol:.05,s:`Regla de tres: ml = (Dosis indicada ÷ Dosis disponible) × Volumen<br>= (${P} ÷ ${D.m}) × ${D.v} = <b>${fmt(a,2)} ml</b>`}},
+      ()=>{const kg=rnd(8,24),mg=15*kg,a=mg/120*5;return{t:`Niño de <b>${kg} kg</b>. Indicación: <b>paracetamol 15 mg/kg/dosis</b>. Disponible: jarabe <b>120 mg / 5 ml</b>. ¿Cuántos ml por dosis?`,a:r2(a),u:'ml',tol:.1,s:`1) Dosis = 15 × ${kg} = ${mg} mg<br>2) ml = (${mg} ÷ 120) × 5 = <b>${fmt(a,2)} ml</b>`}},
+      ()=>{const kg=rnd(10,24),dia=50*kg,dosis=dia/3,a=dosis/250*5;return{t:`Niño de <b>${kg} kg</b>. Indicación: <b>amoxicilina 50 mg/kg/día cada 8 horas</b>. Disponible: suspensión <b>250 mg / 5 ml</b>. ¿Cuántos ml por toma?`,a:r2(a),u:'ml',tol:.1,s:`1) Dosis diaria = 50 × ${kg} = ${dia} mg/día<br>2) Cada 8 h = 3 tomas → ${dia} ÷ 3 = ${fmt(dosis,2)} mg por toma<br>3) ml = (${fmt(dosis,2)} ÷ 250) × 5 = <b>${fmt(a,2)} ml</b>`}},
+     ];
+     const N=6;let qs=shuffle(GEN).map(f=>f()),i=0,ok=0,hist=[];
+     function draw(){
+       if(i>=N){const pct=ok/N*100;setScore('dosis',pct);b.innerHTML='';result(b,pct,pct===100?'¡Cálculos exactos!':'Practica tus fórmulas',`Resolviste ${ok} de ${N} problemas. En la práctica real, verifica siempre tus cálculos con otro profesional (doble chequeo).`,()=>{qs=shuffle(GEN).map(f=>f());i=ok=0;hist=[];draw()});return}
+       const Q=qs[i];
+       b.innerHTML=`<div class="progress-top"><span>Problema <b>${i+1}</b> de ${N}</span><div class="steps-dots">${Array.from({length:N},(_,k)=>`<i class="${hist[k]===true?'ok':hist[k]===false?'bad':k===i?'cur':''}"></i>`).join('')}</div></div>
+       <div class="grid2"><div class="card"><h3>🧾 Indicación</h3><p style="font-size:19px;line-height:1.5">${Q.t}</p><div class="row" style="margin-top:18px"><input class="inp" id="ans" type="number" step="any" placeholder="respuesta" style="width:170px"><span class="mut">${Q.u}</span><button class="btn" id="chk">Verificar</button></div><div class="fb"></div></div>
+       <div class="card" style="text-align:center"><h3 style="justify-content:center">💧 Equipo de venoclisis</h3><div id="dw"></div><p class="mut" style="font-size:13px">${Q.drip?'Al verificar verás el goteo con tu respuesta.':'Recuerda: 1 ml = 20 gotas (macro) = 60 microgotas (micro).'}</p></div></div>`;
+       const dw=dripWidget($('#dw',b),c);
+       const go=()=>{const v=parseFloat($('#ans',b).value.replace(',','.'));if(isNaN(v)){toast('Escribe tu respuesta');return}
+         const good=Math.abs(v-Q.a)<=Q.tol;hist[i]=good;if(good)ok++;good?sOK():sBad();if(Q.drip)dw.set(v);
+         $('#chk',b).disabled=true;fb($('.fb',b),good?'ok':'bad',`${good?'<b>¡Correcto!</b>':'<b>Revisa el cálculo.</b> Respuesta: <b>'+fmt(Q.a,2)+' '+Q.u+'</b>'}<br><span style="font-size:14px">${Q.s}</span><div style="margin-top:10px"><button class="btn" id="nx">Siguiente →</button></div>`);
+         $('#nx',b).onclick=()=>{i++;draw()}};
+       $('#chk',b).onclick=go;$('#ans',b).onkeydown=e=>{if(e.key==='Enter')go()};
+     }draw();
+   }},
+   {t:'💧 Calculadora de goteo',f:(b,c)=>{
+     b.innerHTML=`<div class="grid2"><div class="card"><h3>Datos de la infusión</h3>
+       <label class="mut">Volumen (ml)</label><input type="range" id="v" min="50" max="3000" step="50" value="1000"><b class="mono" id="vv"></b>
+       <div style="height:14px"></div><label class="mut">Tiempo (horas)</label><input type="range" id="t" min="1" max="24" value="8"><b class="mono" id="tv"></b>
+       <div style="height:14px"></div><div class="row"><button class="opt sel" data-f="20">Macrogotero (20 gotas/ml)</button><button class="opt" data-f="60">Microgotero (60 microgotas/ml)</button></div>
+       <div class="grid3" style="margin-top:18px;grid-template-columns:1fr 1fr"><div class="vbox"><small>Goteo</small><b id="r1" style="color:var(--ac)"></b><em id="u1"></em></div><div class="vbox"><small>Bomba</small><b id="r2" style="color:var(--amb)"></b><em>ml/h</em></div></div>
+       <div class="fb info" id="fx" style="margin-top:14px"></div></div><div class="card" style="text-align:center"><h3 style="justify-content:center">Simulación del goteo</h3><div id="dw"></div></div></div>`;
+     const dw=dripWidget($('#dw',b),c);let f=20;
+     const up=()=>{const V=+$('#v',b).value,T=+$('#t',b).value;$('#vv',b).textContent=V+' ml';$('#tv',b).textContent=T+' h';const g=V*f/(T*60);
+       $('#r1',b).textContent=Math.round(g);$('#u1',b).textContent=f==20?'gotas/min':'microgotas/min';$('#r2',b).textContent=fmt(V/T,1);dw.set(g);
+       $('#fx',b).innerHTML=f==20?`Gotas/min = ${V} ÷ (${T} × 3) = <b>${fmt(g,1)}</b>`:`Microgotas/min = ${V} ÷ ${T} = <b>${fmt(g,1)}</b>`};
+     $$('#v,#t',b).forEach(x=>x.oninput=up);$$('[data-f]',b).forEach(x=>x.onclick=()=>{f=+x.dataset.f;$$('[data-f]',b).forEach(y=>y.classList.toggle('sel',y===x));up()});up();
+   }},
+  ],ctx);
+}
+
+/* ========== 8. MATERNO-INFANTIL ========== */
+function mMaterno(el,ctx){
+  tabs(el,[
+   {t:'👶 Test de APGAR',f:(b,c)=>{
+     const CR=[{k:'fc',n:'Frecuencia cardiaca',o:['Ausente','< 100 lpm','≥ 100 lpm']},{k:'re',n:'Esfuerzo respiratorio',o:['Ausente','Lento, irregular, llanto débil','Bueno, llanto fuerte']},{k:'to',n:'Tono muscular',o:['Flácido','Alguna flexión de extremidades','Movimientos activos']},{k:'rf',n:'Irritabilidad refleja',o:['Sin respuesta','Muecas','Llanto, tos o estornudo']},{k:'co',n:'Color de piel',o:['Cianosis o palidez generalizada','Cuerpo rosado, extremidades azuladas','Completamente rosado']}];
+     const CASES=[
+      {fc:138,d:'RN a término, al minuto llora vigorosamente, flexiona y mueve activamente brazos y piernas, llora al aspirarle la nariz. Cuerpo rosado con manos y pies azulados.',s:{fc:2,re:2,to:2,rf:2,co:1}},
+      {fc:110,d:'RN tras parto prolongado. Respiración irregular con llanto débil, flexiona un poco las extremidades, hace una mueca al estimularle. Cuerpo rosado, extremidades azuladas.',s:{fc:2,re:1,to:1,rf:1,co:1}},
+      {fc:80,d:'RN deprimido: no respira, está flácido, hace apenas una mueca al estimularle la planta del pie. Piel pálida y azulada en todo el cuerpo.',s:{fc:1,re:0,to:0,rf:1,co:0}},
+      {fc:146,d:'RN a los 5 minutos: llanto fuerte, movimientos activos, tose y estornuda al estímulo, completamente rosado.',s:{fc:2,re:2,to:2,rf:2,co:2}},
+      {fc:92,d:'RN prematuro: respiración lenta e irregular, alguna flexión de extremidades, llora al estímulo. Cuerpo rosado con extremidades azuladas.',s:{fc:1,re:1,to:1,rf:2,co:1}},
+     ];
+     let list=shuffle(CASES).slice(0,3),i=0,pts=0;
+     const interp=t=>t>=7?['Normal / vigoroso','var(--grn)']:t>=4?['Depresión moderada','var(--amb)']:['Depresión severa','var(--red)'];
+     function draw(){
+       if(i>=list.length){const pct=pts/(list.length*5)*100;setScore('materno',Math.max(best('materno'),pct));b.innerHTML='';result(b,pct,pct>=80?'¡Evaluación neonatal precisa!':'Repasa los criterios del APGAR',`Acertaste ${pts} de ${list.length*5} criterios. El APGAR se evalúa al minuto y a los 5 minutos de vida.`,()=>{list=shuffle(CASES).slice(0,3);i=pts=0;draw()});return}
+       const C=list[i],sel={};const col=C.s.co===2?'#f4a3a0':C.s.co===1?'#e9a39a':'#a7a9c9';const lim=C.s.co===2?col:'#8f9bd6';
+       b.innerHTML=`<div class="progress-top"><span>Recién nacido <b>${i+1}</b> de ${list.length}</span></div><div class="grid2"><div class="card" style="text-align:center"><svg viewBox="0 0 260 200" width="100%" style="max-width:300px"><ellipse cx="130" cy="185" rx="110" ry="10" fill="rgba(0,0,0,.3)"/><rect x="20" y="120" width="220" height="60" rx="20" fill="#3fa9ff" opacity=".25"/><g ${C.s.to===0?'':'class="breathe" style="animation:br 1.4s infinite"'}><ellipse cx="130" cy="120" rx="48" ry="40" fill="${col}"/><circle cx="130" cy="62" r="34" fill="${col}"/><ellipse cx="78" cy="${C.s.to===0?140:112}" rx="12" ry="22" fill="${lim}" transform="rotate(${C.s.to===0?60:30} 78 120)"/><ellipse cx="182" cy="${C.s.to===0?140:112}" rx="12" ry="22" fill="${lim}" transform="rotate(${C.s.to===0?-60:-30} 182 120)"/><ellipse cx="105" cy="160" rx="13" ry="20" fill="${lim}"/><ellipse cx="155" cy="160" rx="13" ry="20" fill="${lim}"/><path d="M118 58q4 4 8 0M136 58q4 4 8 0" stroke="#5a3a3a" stroke-width="2" fill="none"/>${C.s.re===2?'<ellipse cx="130" cy="76" rx="8" ry="7" fill="#7a2f2f"/>':'<path d="M124 76h12" stroke="#5a3a3a" stroke-width="2"/>'}</g></svg>
+         <div class="monitor" style="margin-top:8px"><div class="vbox c-hr" style="text-align:left"><small>Frecuencia cardiaca (auscultación)</small><b>${C.fc} lpm</b></div></div><p style="margin-top:12px;text-align:left;font-size:15px;line-height:1.5">${C.d}</p></div>
+         <div class="card"><h3>Puntúa cada criterio (0 · 1 · 2)</h3>${CR.map(r=>`<div class="crit"><div><b>${r.n}</b></div><div class="seg" data-k="${r.k}">${[0,1,2].map(v=>`<button class="sbtn" data-v="${v}" title="${r.o[v]}">${v}</button>`).join('')}</div><p style="grid-column:1/-1">${r.o.map((o,v)=>v+': '+o).join(' · ')}</p></div>`).join('')}
+         <div class="row" style="justify-content:space-between;margin-top:14px"><span>Total: <b class="big-num" id="tot" style="font-size:32px">0</b>/10</span><button class="btn" id="chk">Verificar APGAR</button></div><div class="fb"></div></div></div>`;
+       $$('.seg',b).forEach(sg=>$$('.sbtn',sg).forEach(x=>x.onclick=()=>{$$('.sbtn',sg).forEach(y=>y.classList.remove('sel'));x.classList.add('sel');sel[sg.dataset.k]=+x.dataset.v;$('#tot',b).textContent=Object.values(sel).reduce((a,v)=>a+v,0)}));
+       $('#chk',b).onclick=()=>{if(Object.keys(sel).length<5){toast('Puntúa los 5 criterios');return}let k=0;
+         $$('.seg',b).forEach(sg=>{const r=C.s[sg.dataset.k];$$('.sbtn',sg).forEach(x=>{x.disabled=true;if(+x.dataset.v===r)x.classList.add('right');else if(x.classList.contains('sel'))x.classList.add('wrong')});if(sel[sg.dataset.k]===r)k++});
+         pts+=k;const T=Object.values(C.s).reduce((a,v)=>a+v,0),[it,ic]=interp(T);k===5?sOK():sBad();
+         fb($('.fb',b),k===5?'ok':'bad',`Criterios correctos: <b>${k}/5</b>. APGAR real: <b style="color:${ic}">${T}/10 — ${it}</b>.<br><span style="font-size:13px">7–10 normal · 4–6 depresión moderada · 0–3 depresión severa (reanimación).</span><div style="margin-top:10px"><button class="btn" id="nx">Siguiente →</button></div>`);
+         $('#nx',b).onclick=()=>{i++;draw()}};
+     }draw();
+   }},
+   {t:'📅 Fecha probable de parto',f:(b,c)=>{
+     const M=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+     const df=d=>`${d.getDate()} de ${M[d.getMonth()]} de ${d.getFullYear()}`;
+     const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+     let i=0,ok=0;const N=3;
+     function draw(){
+       if(i>=N){const pct=ok/N*100;setScore('materno',Math.max(best('materno'),pct));b.innerHTML='';result(b,pct,pct===100?'¡Cálculo de FPP perfecto!':'Repasa la regla de Naegele','Regla de Naegele: FUR + 7 días − 3 meses + 1 año (equivale a sumar 280 días).',()=>{i=ok=0;draw()});return}
+       const today=new Date();const fur=new Date(today.getFullYear(),today.getMonth(),today.getDate()-rnd(30,240));
+       const fpp=new Date(fur);fpp.setDate(fpp.getDate()+280);const eg=Math.floor((today-fur)/864e5);
+       b.innerHTML=`<div class="progress-top"><span>Gestante <b>${i+1}</b> de ${N}</span></div><div class="grid2"><div class="card"><div style="font-size:54px">🤰</div><h3>Control prenatal</h3><p style="font-size:18px">La gestante refiere que su <b>fecha de última regla (FUR)</b> fue el:</p><p class="big-num" style="font-size:28px;margin:10px 0">${df(fur)}</p><p class="mut">Calcula la <b>fecha probable de parto (FPP)</b> con la regla de Naegele.</p>
+         <div class="row" style="margin-top:14px"><input class="inp" type="date" id="d" style="width:200px"><button class="btn" id="chk">Verificar</button></div><div class="fb"></div></div>
+         <div class="card"><h3>📐 Regla de Naegele</h3><div class="grid3" style="grid-template-columns:repeat(3,1fr)"><div class="vbox"><small>Día</small><b>+7</b></div><div class="vbox"><small>Mes</small><b>−3</b></div><div class="vbox"><small>Año</small><b>+1</b></div></div><p class="mut" style="margin-top:14px">Duración promedio del embarazo: 280 días (40 semanas) desde la FUR.</p><div id="eg" style="margin-top:14px"></div></div></div>`;
+       const go=()=>{const v=$('#d',b).value;if(!v){toast('Selecciona una fecha');return}const u=new Date(v+'T00:00:00');const diff=Math.abs(Math.round((u-fpp)/864e5));const good=diff<=3;if(good)ok++;good?sOK():sBad();$('#chk',b).disabled=true;
+         fb($('.fb',b),good?'ok':'bad',`${good?'<b>¡Correcto!</b>':'<b>No coincide.</b>'} FPP: <b>${df(fpp)}</b><div style="margin-top:10px"><button class="btn" id="nx">Siguiente →</button></div>`);
+         $('#eg',b).innerHTML=`<div class="fb info">Edad gestacional hoy: <b>${Math.floor(eg/7)} semanas y ${eg%7} días</b> (${Math.floor(eg/7)<14?'I':Math.floor(eg/7)<28?'II':'III'} trimestre).</div>`;$('#nx',b).onclick=()=>{i++;draw()}};
+       $('#chk',b).onclick=go;
+     }draw();
+   }},
+  ],ctx);
+}
+
+/* ========== 9. BIOSEGURIDAD ========== */
+function mBio(el,ctx){
+  const BINS={negra:{n:'Bolsa negra',s:'Residuo común',c:'b-negra'},roja:{n:'Bolsa roja',s:'Biocontaminado',c:'b-roja'},amarilla:{n:'Bolsa amarilla',s:'Residuo especial',c:'b-amarilla'},punzo:{n:'Recipiente rígido',s:'Punzocortante',c:'b-punzo'}};
+  const ITEMS=[['💉','Jeringa con aguja usada','punzo'],['📍','Aguja hipodérmica','punzo'],['🔪','Hoja de bisturí','punzo'],['🧪','Ampolla de vidrio rota','punzo'],['🩸','Gasas con sangre','roja'],['🧤','Guantes con fluidos corporales','roja'],['🩹','Apósito de curación usado','roja'],['🎒','Bolsa de sangre usada','roja'],['🧫','Cultivo de laboratorio','roja'],['🍌','Restos de comida (área administrativa)','negra'],['📦','Caja de cartón del almacén','negra'],['🧻','Papel toalla del lavado de manos','negra'],['📰','Papeles de oficina','negra'],['💊','Medicamento vencido','amarilla'],['🌡️','Termómetro de mercurio roto','amarilla'],['🔋','Pilas y baterías','amarilla'],['⚗️','Envase de reactivo químico','amarilla']];
+  tabs(el,[
+   {t:'🗑️ Segregación de residuos',f:(b,c)=>{
+     let items,sel,ok,tot,cnt;
+     const start=()=>{items=shuffle(ITEMS).slice(0,12).map((x,i)=>({e:x[0],n:x[1],b:x[2],id:i,tries:0}));sel=null;ok=0;tot=items.length;cnt={negra:0,roja:0,amarilla:0,punzo:0};draw()};
+     function draw(){
+       b.innerHTML=`<p class="mut" style="margin-bottom:12px">Selecciona un residuo y luego el contenedor correcto (o arrástralo). Clasificación según la norma técnica de residuos sólidos de establecimientos de salud.</p><div class="card"><h3>🧺 Residuos generados en el turno <span class="badge">${items.length} por clasificar</span></h3><div class="items">${items.map(it=>`<button class="item ${sel===it.id?'sel':''}" draggable="true" data-id="${it.id}"><span class="e">${it.e}</span>${it.n}</button>`).join('')||'<p class="mut">¡Todo clasificado!</p>'}</div></div>
+       <div class="bins">${Object.entries(BINS).map(([k,v])=>`<div class="bin ${v.c}" data-b="${k}"><div class="lid"></div><span>${v.n}</span><small>${v.s}</small><span class="cnt">${cnt[k]}</span></div>`).join('')}</div><div class="fb"></div><div id="res"></div>`;
+       $$('.item',b).forEach(x=>{x.onclick=()=>{sel=+x.dataset.id;$$('.item',b).forEach(y=>y.classList.toggle('sel',y===x));tone(500,.04,.06)};x.ondragstart=e=>{sel=+x.dataset.id;e.dataTransfer.setData('text','x')}});
+       $$('.bin',b).forEach(bn=>{bn.onclick=()=>drop(bn);bn.ondragover=e=>{e.preventDefault();bn.classList.add('over')};bn.ondragleave=()=>bn.classList.remove('over');bn.ondrop=e=>{e.preventDefault();bn.classList.remove('over');drop(bn)}});
+     }
+     function drop(bn){if(sel==null){toast('Primero selecciona un residuo');return}const it=items.find(x=>x.id===sel);if(!it)return;const k=bn.dataset.b;
+       if(k===it.b){if(it.tries===0)ok++;cnt[k]++;items=items.filter(x=>x!==it);sel=null;sOK();const f=$('.fb',b);draw();fb($('.fb',b),'ok',`✅ <b>${it.n}</b> → ${BINS[k].n} (${BINS[k].s}).`);
+         if(!items.length){const pct=ok/tot*100;setScore('bioseguridad',Math.max(best('bioseguridad'),pct));result($('#res',b),pct,pct===100?'¡Segregación perfecta!':'Buen trabajo, revisa los errores',`Clasificaste ${ok} de ${tot} residuos al primer intento. Una segregación correcta protege al personal de limpieza y a la comunidad.`,start)}}
+       else{it.tries++;sBad();bn.classList.remove('shake');void bn.offsetWidth;bn.classList.add('shake');fb($('.fb',b),'bad',`❌ <b>${it.n}</b> no va en ${BINS[k].n}. Pista: su categoría es <b>${BINS[it.b].s}</b>.`)}}
+     start();
+   }},
+   {t:'🥼 Colocación de EPP',f:b=>orderGame(b,['Higiene de manos','Colocarse la bata o mandil','Colocarse la mascarilla o respirador N95','Colocarse los lentes o el protector facial','Colocarse los guantes (cubriendo el puño de la bata)'],p=>setScore('bioseguridad',Math.max(best('bioseguridad'),Math.round(p))),'Vas a atender a un paciente en aislamiento. Ordena la secuencia de colocación del equipo de protección personal.')},
+   {t:'🥼 Retiro de EPP',f:b=>orderGame(b,['Retirar los guantes sin tocar el exterior','Retirar los lentes o protector facial por las tiras','Retirar la bata enrollándola hacia adentro','Retirar la mascarilla por las tiras sin tocar el frente','Higiene de manos'],p=>setScore('bioseguridad',Math.max(best('bioseguridad'),Math.round(p))),'Terminaste la atención. Ordena la secuencia de retiro del EPP para evitar contaminarte.')},
+  ],ctx);
+}
+
+/* ========== 10. HISTORIA CLÍNICA ========== */
+function mHistoria(el,ctx){
+  const CAT={S:'Subjetivo',O:'Objetivo',A:'Análisis (Dx enfermería)',P:'Planificación',I:'Intervención',E:'Evaluación'};
+  const CASES=[
+   {h:{Paciente:'Juan Carlos Llontop Ramírez',Edad:'28 años',Servicio:'Cirugía — Cama 12',Dx:'Post operado de apendicectomía (1.er día)'},st:[
+    ['S','Paciente refiere: "me duele mucho la herida cuando me muevo".'],['S','Refiere que no pudo dormir bien por el dolor.'],['O','PA 130/85 mmHg, FC 98 lpm, FR 22 rpm, T 37,2 °C.'],['O','Facies de dolor, escala EVA 7/10, herida operatoria en fosa ilíaca derecha con apósito seco.'],
+    ['A','Dolor agudo r/c agentes lesivos físicos (herida quirúrgica) e/p verbalización de dolor y EVA 7/10.'],['P','El paciente disminuirá el dolor a EVA ≤ 3 en las próximas 2 horas.'],['I','Se administra ketorolaco 60 mg IM según indicación médica.'],['I','Se coloca en posición semifowler y se le enseña a proteger la herida al toser.'],['E','A las 2 horas el paciente refiere alivio, EVA 3/10. Objetivo alcanzado.']]},
+   {h:{Paciente:'Rosa Elvira Chapoñán Sánchez',Edad:'74 años',Servicio:'Medicina — Cama 5',Dx:'Neumonía adquirida en la comunidad'},st:[
+    ['S','Refiere: "me falta el aire y me canso al caminar".'],['S','Su hija refiere que no come bien desde hace 3 días.'],['O','FR 28 rpm, SatO₂ 89% con aire ambiental, T 38,4 °C.'],['O','Uso de músculos accesorios y crépitos en base pulmonar derecha.'],
+    ['A','Deterioro del intercambio gaseoso r/c desequilibrio ventilación-perfusión e/p SatO₂ 89% y disnea.'],['P','La paciente mantendrá SatO₂ ≥ 92% durante el turno.'],['I','Se administra oxígeno por cánula binasal a 3 L/min según indicación médica.'],['I','Se coloca en posición semifowler y se controla la saturación cada hora.'],['E','Tras 1 hora: SatO₂ 94%, FR 22 rpm. Objetivo parcialmente alcanzado; se continúa el monitoreo.']]},
+  ];
+  const C=pick(CASES);const items=shuffle(C.st.map((s,i)=>({c:s[0],t:s[1],i})));const ans={};
+  el.innerHTML=`<div class="grid2" style="margin-top:18px"><div class="doc"><h4>🏥 Hoja de filiación</h4>${Object.entries(C.h).map(([k,v])=>`<div class="f"><span>${k==='Dx'?'Dx médico':k}</span><b>${v}</b></div>`).join('')}<div class="f"><span>Fecha</span><b>${new Date().toLocaleDateString('es-PE')}</b></div></div>
+   <div class="card"><h3>📝 Formato SOAPIE</h3><div class="grid3" style="grid-template-columns:repeat(3,1fr);gap:8px">${Object.entries(CAT).map(([k,v])=>`<div class="vbox"><b style="color:var(--ac)">${k}</b><small style="text-transform:none;letter-spacing:0">${v}</small></div>`).join('')}</div><p class="mut" style="margin-top:12px;font-size:14px">Clasifica cada dato de la nota de enfermería con su letra.</p></div></div>
+   <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">${items.map((it,k)=>`<div class="stm" data-k="${k}"><p>${it.t}</p><div class="seg">${Object.keys(CAT).map(c=>`<button class="sbtn" data-c="${c}" title="${CAT[c]}">${c}</button>`).join('')}</div></div>`).join('')}</div>
+   <div class="center" style="margin-top:18px"><button class="btn" id="chk">✅ Verificar clasificación</button></div><div class="fb"></div><div id="note"></div><div id="res"></div>`;
+  $$('.stm',el).forEach(r=>$$('.sbtn',r).forEach(x=>x.onclick=()=>{$$('.sbtn',r).forEach(y=>y.classList.remove('sel'));x.classList.add('sel');ans[r.dataset.k]=x.dataset.c;tone(520,.04,.06)}));
+  $('#chk',el).onclick=()=>{if(Object.keys(ans).length<items.length){toast('Clasifica todos los datos ('+Object.keys(ans).length+'/'+items.length+')');return}
+    let ok=0;$$('.stm',el).forEach(r=>{const it=items[r.dataset.k];$$('.sbtn',r).forEach(x=>{x.disabled=true;if(x.dataset.c===it.c)x.classList.add('right');else if(x.classList.contains('sel'))x.classList.add('wrong')});if(ans[r.dataset.k]===it.c)ok++});
+    const pct=ok/items.length*100;setScore('historia',pct);$('#chk',el).disabled=true;
+    const now=new Date();const note=`NOTA DE ENFERMERÍA — ${now.toLocaleDateString('es-PE')} ${now.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'})}\nPaciente: ${C.h.Paciente} (${C.h.Edad}) · ${C.h.Servicio}\nDx médico: ${C.h.Dx}\n\n`+Object.keys(CAT).map(k=>`${k} (${CAT[k]}):\n`+C.st.filter(s=>s[0]===k).map(s=>'  • '+s[1]).join('\n')).join('\n\n')+`\n\nFirma y sello: ____________________`;
+    $('#note',el).innerHTML=`<div class="card" style="margin-top:16px"><div class="row" style="justify-content:space-between"><h3>📄 Nota de enfermería SOAPIE generada</h3><button class="btn ghost" id="cp">📋 Copiar nota</button></div><div class="note">${note.replace(/</g,'&lt;')}</div></div>`;
+    $('#cp',el).onclick=()=>{try{navigator.clipboard.writeText(note).then(()=>toast('✅ Nota copiada'),()=>toast('No se pudo copiar'))}catch(e){toast('No se pudo copiar')}};
+    result($('#res',el),pct,pct===100?'¡Registro clínico impecable!':'Repasa el formato SOAPIE',`Clasificaste ${ok} de ${items.length} datos correctamente. Recuerda: lo que no se registra, no se hizo.`,()=>route());
+  };
+}
+
+route();
+</script>
+</body>
+</html>
